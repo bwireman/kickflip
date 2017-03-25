@@ -51,6 +51,7 @@
          }
          return -1;
      }
+
      onInput(message, phoneNumber) {
          // direct program based on its current state
          if (this.state == "join") {
@@ -60,14 +61,30 @@
 		     this.parseJudgeStart(message, phoneNumber);
          }
          else if (this.state == "playerResponses") {
-
+             parseResponse(message, phoneNumber);
          }
          else if (this.state == "judging") {
 		  //todo parse judging
          }
      }
+<<<<<<< HEAD
 	 
 	 
+=======
+
+     parseResponse(message, phoneNumber) {
+
+         if (this.isValidNumber(phoneNumber) == 1) {
+             if (message.length > 140) {
+                 message = message.substr(0, 140);
+             }
+
+             this.answers.push(message);
+         }
+         
+     }
+
+>>>>>>> 037024636075dab51ae1b5cb43a74dfc684db8fb
 	parseJudging(message, phoneNumber) {
 		// checks that phoneNumber is the judge 
 		if (this.isValidNumber(phoneNumber) == 2) {
@@ -91,7 +108,7 @@
 	}
 	
 	parseJudgeStart(message, phoneNumber) {
-		if (this.isValidNumber == 2) {
+		if (this.isValidNumber(phoneNumber) == 2) {
 			if (message.length > 140) {
 				//todo send message to judge, need another question
 			}
