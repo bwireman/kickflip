@@ -305,23 +305,29 @@ class Game {
 	}
 
 	roundEnd() {
-		if (this.judgeIndex == this.players.length - 1) {
-			var max = 0;
-			var winnerName;
-			for (var i = 0; i < this.players.length; ++i) {
-				if (this.players[i].score > max) {
-					max = this.players[i].score
-					winnerName = this.players[i].name
-				}
-			}
-			for (var i = 0; i < this.players.length; ++i) {
-				this.sendText(this.players[i].phoneNumber, 'Game over! The winner is ' + winnerName + ' with ' + max + ' points!');
-			}
-		}
+		if (this.judgeIndex == this.players.length - 1) {			
+			this.gameOver();
+		}		
 		else {
 			this.judgeIndex++
 			// call Austin's function
+			this.roundStart();
 		}
+	}
+	
+	gameOver() {
+		var max = 0;
+		var winnerName;
+		for (var i = 0; i < this.players.length; ++i) {
+			if (this.players[i].score > max) {
+				max = this.players[i].score
+				winnerName = this.players[i].name
+			}
+		}
+		for (var i = 0; i < this.players.length; ++i) {
+			this.sendText(this.players[i].phoneNumber, 'Game over! The winner is ' + winnerName + ' with ' + max + ' points!');
+		}		
+		//todo send event emitter to driver function and clear memory and shiz
 	}
  } //end of game object
 
