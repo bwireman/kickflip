@@ -1,0 +1,12 @@
+{
+    "name": "kickflip",
+    "version": "0.0.0",
+    "description": "MHacks 9 Project",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/dudasaus/kickflip.git",
+        "dependencies": {
+            
+        }
+    }
+}
