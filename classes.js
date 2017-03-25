@@ -190,10 +190,10 @@ class Game {
          //send to all players
          for(var i = 0; i < this.players.length; ++i) {
              if (i != this.judgeIndex) {
-                 this.sendText(this.players[i].phoneNumber, "The answers are...\n" + all_answers);
+                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers);
              }
              else {
-                 this.sendText(this.players[i].phoneNumber, "The answers are...\n" + all_answers + "\n\n Respond with a number to choose the best answer!");
+                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers + "\n Respond with a number to choose the best answer!");
              }
          }
 
@@ -306,8 +306,8 @@ class Game {
 			}
 			else {
 				this.question = message;
-				console.log("question recieved, advance to state player response")
-				this.sendText(phoneNumber, 'Question recieved, now wait for player responses');
+				console.log("question received, advance to state player response")
+				this.sendText(phoneNumber, 'Question received, now wait for player responses');
 				this.judgeStartToPlayerResponse(); //advance state
 			}
 		}
