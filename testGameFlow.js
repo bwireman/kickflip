@@ -29,3 +29,13 @@ game.onInput('GameName, Sieu', numbers.sieu);
 game.onInput('STaRt', numbers.austin);
 
 console.log(game);
+
+
+//testing responses
+game.state = "playerResponses";
+game.onInput("austin", numbers.ben);
+game.onInput("sieu", numbers.sieu);
+game.onInput("brooke", numbers.brooke);
+game.onInput("nick", numbers.nick);
+
+console.log(game.state);
