@@ -28,7 +28,6 @@ game.onInput('GameName, Sieu', numbers.sieu);
 // Start game
 game.onInput('STaRt', numbers.austin);
 
-// while (game.judgeIndex < game.players.length - 1) {
 for (var i = 0; i < game.players.length; ++i) {
     // Test judge giving question
     var judgePhoneNumber = game.players[game.judgeIndex].phoneNumber;
