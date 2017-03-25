@@ -28,7 +28,7 @@ class Driver {
 
 		var args = this.getArgs(text, CREATE_COMMAND);
 
-		this.game = new Game(args[0], senderNumber, args[1].trim());
+		this.game = new Game(args[0], senderNumber, args[1]);
 	}
 
 	getCommand(text) {
@@ -40,10 +40,16 @@ class Driver {
 		text = text.trim();
 		text = text.substr(command.length);
 		text = text.trim();
-		return text.split(',');
+
+		var args = text.split(',');
+		for (var i = 0; i < args.length; i++) {
+			args[i] = args[i].trim();
+		}
+
+		return args;
 	}
 }
 
 class DriverEmitter extends EventEmitter {}
 
-module.exports = Driver;
+module.exports.Driver = Driver;
