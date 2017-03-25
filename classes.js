@@ -31,13 +31,12 @@ class Game {
      // sendText(phoneNumber, msg);
      // sendText(phoneNumber array, msg);
      sendText(numbers, msg) {
+		 console.log(typeof(numbers));
          if (typeof(numbers) == "string") {
-             //this.driverEmitter.emit('sendText', numbers, msg);
              this.sendTextWithDebug(numbers, msg);
          }
          else {
              for (var i = 0; i < numbers.length; ++i) {
-                //  this.driverEmitter.emit('sendText', numbers[i], msg);
                 this.sendTextWithDebug(numbers[i], msg);
              }
          }
@@ -125,12 +124,14 @@ class Game {
                  else {
                      // username was 0 characters?
                      console.log("Username was 0 character");
+                     this.sendText(number, "You didn\'t enter a username!\nRespond with \""+ this.name +", USERNAME\"");
                  }
              }
          }
          else {
              // wasn't the right format
              console.log("message had the wrong format");
+             this.sendText(number, "Wrong format! Respond with \"" + this.name + ", USERNAME\"");
          }
 
      }
@@ -179,39 +180,51 @@ class Game {
 					//choice -= 1;
 					var winningPlayerIndex = this.answers[choice].playerIndex;
 					this.players[winningPlayerIndex].score += 10;
+					var winnerName = players[winningPlayerIndex].name; 
+					for (var i = 0; i < this.players.length; ++i) {
+							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points');
+					}	
 					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
 				}
 				else {
-					// not a valid player choice
+					this.sendText(phoneNumber, 'Please send a valid choice')
 					console.log('choice is not valid')
 				}
 			}
 			else {
-				// not even a number bro
+				this.sendText(phoneNumber, 'Please send a valid choice')
 				console.log('please send a valid choice')
 			}
 		}
 		else {
-			// not a valid phone number so ignore that hoe
+			this.sendText(phoneNumber, 'The answer must come from the judge')
 			console.log('phonenumber not in players[] or phonenumber not judge')
 		}
 	}
 
 	parseJudgeStart(message, phoneNumber) {
 		if (this.isValidNumber(phoneNumber) == 2) {
-			if (message.length > 140) {
-				//todo send message to judge, need another question
-				console.log("message too long")
+			if (message.length > 140) {				
+				this.sendText(phoneNumber, 'Error: response too long. Please send another message < 140 characters');
+				console.log("message too long");
 			}
 			else {
 				this.question = message;
 				console.log("question recieved, advance to state player response")
+				this.sendText(phoneNumber, 'Question recieved, now wait for player responses');
 				//todo advance state
 			}
 		}
 		else {
-			console.log("not judge, please wait for question")
+			if (this.isValidNumber(phoneNumber) == 0) {
+				this.sendText(phoneNumber, 'You are not in this game...')
+			}
+			else {
+				this.sendText(this.players[this.getPlayer(phoneNumber)], 'You are not the current judge, please wait for judge to send question');
+				console.log("not judge, please wait for question")
+			}
 		}
+		
 	}
  } //end of game object
 
