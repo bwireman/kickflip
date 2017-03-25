@@ -1,5 +1,5 @@
 // Game object
- class Game {
+class Game {
 
      constructor(gameName, phoneNumber, username) {
          this.name = name;
@@ -55,7 +55,7 @@
      onInput(message, phoneNumber) {
          // direct program based on its current state
          if (this.state == "join") {
-
+             parseJoinInput(message, phoneNumber);
          }
          else if (this.state == "judgestart") {
 		     this.parseJudgeStart(message, phoneNumber);
@@ -72,6 +72,42 @@
 	 
 =======
 
+<<<<<<< HEAD
+     // Parsing input functions
+     parseJoinInput(msg, number) {
+         // check for start
+         if (number == this.creatorPhoneNumber) {
+             msg = msg.trim().toLowerCase();
+             if (msg == 'start') {
+                 // enter player response stage
+                 // shuffle players, set judge index to 0
+             }
+         }
+
+
+         // game_name, user_name
+         msg = msg.split(",");
+         if (msg.length >= 2) {
+             var gameName = msg[0].trim();
+             var username = msg[1].trim();
+             if (gameName == this.name) {
+                 if (username.length > 0) {
+                     this.addPlayer(number, username);
+                 }
+                 else {
+                     // username was 0 characters?
+                     console.log("Username was 0 character");
+                 }
+             }
+         }
+         else {
+             // wasn't the right format
+             console.log("message had the wrong format");
+         }
+
+     }
+
+=======
      parseResponse(message, phoneNumber) {
 
          if (this.isValidNumber(phoneNumber) == 1) {
@@ -83,6 +119,7 @@
          }
          
      }
+>>>>>>> 037024636075dab51ae1b5cb43a74dfc684db8fb
 
 >>>>>>> 037024636075dab51ae1b5cb43a74dfc684db8fb
 	parseJudging(message, phoneNumber) {
