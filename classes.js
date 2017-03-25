@@ -180,10 +180,10 @@ class Game {
 					//choice -= 1;
 					var winningPlayerIndex = this.answers[choice].playerIndex;
 					this.players[winningPlayerIndex].score += 10;
-					var winnerName = players[winningPlayerIndex].name; 
+					var winnerName = this.players[winningPlayerIndex].name; 
 					for (var i = 0; i < this.players.length; ++i) {
 							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points');
-					}	
+					}
 					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
 				}
 				else {
@@ -204,7 +204,7 @@ class Game {
 
 	parseJudgeStart(message, phoneNumber) {
 		if (this.isValidNumber(phoneNumber) == 2) {
-			if (message.length > 140) {				
+			if (message.length > 140) {
 				this.sendText(phoneNumber, 'Error: response too long. Please send another message < 140 characters');
 				console.log("message too long");
 			}
@@ -224,7 +224,7 @@ class Game {
 				console.log("not judge, please wait for question")
 			}
 		}
-		
+
 	}
  } //end of game object
 
