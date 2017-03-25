@@ -248,7 +248,7 @@ class Game {
 				if (choice - 1 < this.answers.length && choice > 0) {
 					//choice -= 1;
 					var judgeName = this.players[this.judgeIndex].name;
-\					var winningPlayerIndex = this.answers[choice - 1].playerIndex;
+					var winningPlayerIndex = this.answers[choice - 1].playerIndex;
 					this.players[winningPlayerIndex].score += 10;
 					var winnerName = this.players[winningPlayerIndex].name;
 					for (var i = 0; i < this.players.length; ++i) {
