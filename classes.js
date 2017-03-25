@@ -63,11 +63,30 @@
 
          }
          else if (this.state == "judging") {
-
+		  //todo parse judging
          }
      }
-
-
+	parseJudging(message, phoneNumber) {
+		// checks that phoneNumber is the judge 
+		if (this.isValidNumber(phoneNumber) == 2) {
+			// changes choice into an int, makes sure its valid 
+			var choice = parseInt(message)
+			if (!isNaN(choice)) {
+				if (choice < this.players.length) {
+					this.players[choice].score += 10; 
+				}
+				else {
+					// not a valid player choice 
+				}
+			}
+			else {
+				// not even a number bro 
+			}
+		}
+		else {
+			// not a valid phone number so ignore that hoe 
+		}
+	}
  } //end of game object
 
  /*
