@@ -1,6 +1,10 @@
+const Driver = require('./driver.js');
 const Classes = require('./classes.js');
 
-var game = new Classes.Game('GameName', '123', 'Username');
+var driver = new Driver.Driver();
+var game = new Classes.Game('GameName', '123', 'Username', driver.driverEmitter);
+
+game.sendText(['+12488824432','+12485348895','+18172230083'], 'tests.js');
 
 console.log(game);
 
@@ -17,7 +21,7 @@ game.onInput('GameName   ,    ', '2');
 
 console.log(game);
 
-//Testing judgeStart
+// Testing judgeStart
 game.state = 'judgeStart';
 console.log(game);
 game.onInput('what is my favorite color', '123'); //judge creates valid question
@@ -25,4 +29,3 @@ game.onInput('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 game.onInput('I want this to be my question', '234');
 game.onInput('Im not in the game even', '12489t1235');
 console.log(game);
-			  
