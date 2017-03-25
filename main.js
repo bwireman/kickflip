@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
 const twilio = require('twilio');
 const Driver = require('./driver.js');
@@ -15,6 +16,10 @@ const twilioToken = '88e8ec36215e9645adccd41d54c8bbd3';
 // The index
 app.get('/', function (req, res) {
 	res.send('This is the server for Kickflip');
+})
+
+app.get('/logo', function(req, res) {
+	res.sendFile(path.join(__dirname+'/kickflipLogo2.png'));
 })
 
 // handle POST requests at /text
