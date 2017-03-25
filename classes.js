@@ -32,12 +32,10 @@ class Game {
      // sendText(phoneNumber array, msg);
      sendText(numbers, msg) {
          if (typeof(numbers) == "string") {
-             //this.driverEmitter.emit('sendText', numbers, msg);
              this.sendTextWithDebug(numbers, msg);
          }
          else {
              for (var i = 0; i < numbers.length; ++i) {
-                //  this.driverEmitter.emit('sendText', numbers[i], msg);
                 this.sendTextWithDebug(numbers[i], msg);
              }
          }
@@ -125,12 +123,14 @@ class Game {
                  else {
                      // username was 0 characters?
                      console.log("Username was 0 character");
+                     this.sendText(number, "You didn\'t enter a username!\nRespond with \""+ this.name +", USERNAME\"");
                  }
              }
          }
          else {
              // wasn't the right format
              console.log("message had the wrong format");
+             this.sendText(number, "Wrong format! Respond with \"" + this.name + ", USERNAME\"");
          }
 
      }
