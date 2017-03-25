@@ -26,10 +26,7 @@ class Driver {
 			return;
 		}
 
-		text = text.trim();
-		text = text.substr(CREATE_COMMAND.length);
-		text = text.trim();
-		args = text.split(',');
+		var args = this.getArgs(text, CREATE_COMMAND);
 
 		this.game = new Game(args[0], senderNumber, args[1].trim());
 	}
@@ -37,6 +34,13 @@ class Driver {
 	getCommand(text) {
 		text = text.trim().toLowerCase();
 		return text.split(' ')[0];
+	}
+
+	getArgs(text, command) {
+		text = text.trim();
+		text = text.substr(command.length);
+		text = text.trim();
+		return text.split(',');
 	}
 }
 
