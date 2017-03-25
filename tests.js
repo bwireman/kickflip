@@ -25,6 +25,7 @@ game.onInput('GameName   ,    Brooke  ', numbers.brooke);
 game.onInput('GameName, NickAgain', numbers.nick);
 game.onInput('WrongName, NickStill', numbers.ben);
 game.onInput('GameName   ,    ', numbers.ben);
+game.onInput('GameName username', numbers.ben);
 
 
 console.log(game);

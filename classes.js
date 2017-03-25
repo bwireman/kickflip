@@ -33,12 +33,10 @@ class Game {
      sendText(numbers, msg) {
 		 console.log(typeof(numbers));
          if (typeof(numbers) == "string") {
-             //this.driverEmitter.emit('sendText', numbers, msg);
              this.sendTextWithDebug(numbers, msg);
          }
          else {
              for (var i = 0; i < numbers.length; ++i) {
-                //  this.driverEmitter.emit('sendText', numbers[i], msg);
                 this.sendTextWithDebug(numbers[i], msg);
              }
          }
@@ -126,12 +124,14 @@ class Game {
                  else {
                      // username was 0 characters?
                      console.log("Username was 0 character");
+                     this.sendText(number, "You didn\'t enter a username!\nRespond with \""+ this.name +", USERNAME\"");
                  }
              }
          }
          else {
              // wasn't the right format
              console.log("message had the wrong format");
+             this.sendText(number, "Wrong format! Respond with \"" + this.name + ", USERNAME\"");
          }
 
      }
@@ -148,9 +148,8 @@ class Game {
      }
 
      parseResponse (message, phoneNumber) {
-
          if (this.isValidNumber(phoneNumber) == PLAYER) {
-
+             this.sendText(phoneNumber, "The question is \"" +  this.question + "\" \n please answer");
              //makes answer object
              var cur_answer = new Answer;
              cur_answer.playerIndex = this.getPlayer(phoneNumber);
@@ -181,20 +180,24 @@ class Game {
 					//choice -= 1;
 					var winningPlayerIndex = this.answers[choice].playerIndex;
 					this.players[winningPlayerIndex].score += 10;
+					var winnerName = players[winningPlayerIndex].name; 
+					for (var i = 0; i < this.players.length; ++i) {
+							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points');
+					}	
 					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
 				}
 				else {
-					// not a valid player choice
+					this.sendText(phoneNumber, 'Please send a valid choice')
 					console.log('choice is not valid')
 				}
 			}
 			else {
-				// not even a number bro
+				this.sendText(phoneNumber, 'Please send a valid choice')
 				console.log('please send a valid choice')
 			}
 		}
 		else {
-			// not a valid phone number so ignore that hoe
+			this.sendText(phoneNumber, 'The answer must come from the judge')
 			console.log('phonenumber not in players[] or phonenumber not judge')
 		}
 	}
