@@ -88,10 +88,15 @@ class Game {
          }
          else if (this.state == "judgeStart") {
 			 console.log('calling parse judgeStart');
-		     this.parseJudgeStart(message, phoneNumber);
+			 this.parseJudgeStart(message, phoneNumber);
          }
          else if (this.state == "playerResponses") {
              this.parseResponse(message, phoneNumber);
+
+             //if we have all the answers (todo timer eventually)
+             if(this.answers.length == (this.players.length - 1)) {
+                 this.playerResponseToJudging();
+             }
          }
          else if (this.state == "judging") {
 		  //todo parse judging
@@ -136,6 +141,10 @@ class Game {
 
      }
 
+     playerResponseToJudging () {
+         this.state = "judging";
+     }
+
     //checks if a , in an answer object has already submitted an answer
      checkForInAnswers (cur_answer) {
 
@@ -153,7 +162,7 @@ class Game {
              //makes answer object
              var cur_answer = new Answer;
              cur_answer.playerIndex = this.getPlayer(phoneNumber);
-             //if they haven't subumited an answer yet
+             //if they haven't submited an answer yet
              if (!(this.checkForInAnswers(cur_answer))) {
 
                  //cuts answer down if larger than 140 chars
