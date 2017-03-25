@@ -31,6 +31,7 @@ class Game {
      // sendText(phoneNumber, msg);
      // sendText(phoneNumber array, msg);
      sendText(numbers, msg) {
+		 console.log(typeof(numbers));
          if (typeof(numbers) == "string") {
              //this.driverEmitter.emit('sendText', numbers, msg);
              this.sendTextWithDebug(numbers, msg);
@@ -204,19 +205,27 @@ class Game {
 
 	parseJudgeStart(message, phoneNumber) {
 		if (this.isValidNumber(phoneNumber) == 2) {
-			if (message.length > 140) {
-				//todo send message to judge, need another question
-				console.log("message too long")
+			if (message.length > 140) {				
+				this.sendText(phoneNumber, 'Error: response too long. Please send another message < 140 characters');
+				console.log("message too long");
 			}
 			else {
 				this.question = message;
 				console.log("question recieved, advance to state player response")
+				this.sendText(phoneNumber, 'Question recieved, now wait for player responses');
 				//todo advance state
 			}
 		}
 		else {
-			console.log("not judge, please wait for question")
+			if (this.isValidNumber(phoneNumber) == 0) {
+				this.sendText(phoneNumber, 'You are not in this game...')
+			}
+			else {
+				this.sendText(this.players[this.getPlayer(phoneNumber)], 'You are not the current judge, please wait for judge to send question');
+				console.log("not judge, please wait for question")
+			}
 		}
+		
 	}
  } //end of game object
 
