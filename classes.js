@@ -10,7 +10,7 @@ class Game {
          this.players = [];
          this.judgeIndex = 0;
          this.answers = [];
-
+		 this.question = '';
          this.addPlayer(phoneNumber, username);
      }
 
@@ -58,7 +58,7 @@ class Game {
              parseJoinInput(message, phoneNumber);
          }
          else if (this.state == "judgestart") {
-
+		     this.parseJudgeStart(message, phoneNumber);
          }
          else if (this.state == "playerResponses") {
              parseResponse(message, phoneNumber);
@@ -67,6 +67,10 @@ class Game {
 		  //todo parse judging
          }
      }
+<<<<<<< HEAD
+	 
+	 
+=======
 
      // Parsing input functions
      parseJoinInput(msg, number) {
@@ -114,6 +118,7 @@ class Game {
 
      }
 
+>>>>>>> 037024636075dab51ae1b5cb43a74dfc684db8fb
 	parseJudging(message, phoneNumber) {
 		// checks that phoneNumber is the judge
 		if (this.isValidNumber(phoneNumber) == 2) {
@@ -134,6 +139,18 @@ class Game {
 		else {
 			// not a valid phone number so ignore that hoe
 		}
+	}
+	
+	parseJudgeStart(message, phoneNumber) {
+		if (this.isValidNumber(phoneNumber) == 2) {
+			if (message.length > 140) {
+				//todo send message to judge, need another question
+			}
+			else {
+				this.question = message;
+				//todo advance state
+			}
+		}	
 	}
  } //end of game object
 
