@@ -147,9 +147,8 @@ class Game {
      }
 
      parseResponse (message, phoneNumber) {
-
          if (this.isValidNumber(phoneNumber) == PLAYER) {
-
+             this.sendText(phoneNumber, "The question is \"" +  this.question + "\" \n please answer");
              //makes answer object
              var cur_answer = new Answer;
              cur_answer.playerIndex = this.getPlayer(phoneNumber);
