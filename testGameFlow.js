@@ -33,7 +33,7 @@ var judgePhoneNumber = game.players[game.judgeIndex].phoneNumber;
 var invalidPhoneNumber = game.players[(game.judgeIndex + 1) % game.players.length].phoneNumber;
 //invalid judge response
 game.onInput('fuckffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', judgePhoneNumber);
-game.onInput('im dumb', invalidPhoneNumber) //not judge 
+game.onInput('im dumb', invalidPhoneNumber) //not judge
 //valid
 game.onInput('what is my favorite color', judgePhoneNumber); //judge creates valid question
 console.log(game);
@@ -42,9 +42,10 @@ console.log(game);
 //testing responses
 //testing responses
 game.state = "playerResponses";
-game.onInput("austin", numbers.ben);
+game.onInput("austin", numbers.austin);
 game.onInput("sieu", numbers.sieu);
 game.onInput("brooke", numbers.brooke);
 game.onInput("nick", numbers.nick);
+game.onInput("ben", numbers.ben);
 
-console.log(game.state);
+console.log(game);

@@ -171,7 +171,29 @@ class Game {
         }
      }
 
-     playerResponseToJudging () {
+     /** BEN'S FUNCTIONS AND STUFF **/
+
+     playerResponseToJudging() {
+         shuffleArray(this.answers);
+
+         var all_answers = '';
+
+         for(var x = 0; x < this.answers.length; ++x) {
+             all_answers += (x+1) + ") "  + this.answers[x].text + "\n";
+         }
+
+
+         //send to all players
+         for(var i = 0; i < this.players.length; ++i) {
+             if (i != this.judgeIndex) {
+                 this.sendText(this.players[i].phoneNumber, "The answers are...\n" + all_answers);
+             }
+             else {
+                 this.sendText(this.players[i].phoneNumber, "The answers are...\n" + all_answers + "\n\n Respond with a number to choose the best answer!");
+             }
+         }
+
+
          this.state = "judging";
      }
 
@@ -205,20 +227,6 @@ class Game {
 
                  //if we have all the answers (todo timer eventually)
                  if(this.answers.length == (this.players.length - 1)) {
-                     this.shuffleArray(this.answers);
-
-                     var all_answers;
-
-                     for(var x = 0; x < this.answers.length; ++x) {
-                         all_answers += this.answers[x] + "\n";
-                     }
-
-
-                     //send to all players
-                     for(var i of this.players) {
-                         this.sendText(phoneNumber, "The answers are " + all_answers);
-                     }
-
                      this.playerResponseToJudging();
                  }
              }
@@ -226,6 +234,8 @@ class Game {
          }
 
      }
+
+     /** BROOKE'S FUNCTIONS AND STUFF **/
 
 	parseJudging(message, phoneNumber) {
 		// checks that phoneNumber is the judge
@@ -241,7 +251,7 @@ class Game {
 					for (var i = 0; i < this.players.length; ++i) {
 							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points');
 					}
-					this.roundEnd(); 
+					this.roundEnd();
 					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
 				}
 				else {
@@ -283,7 +293,7 @@ class Game {
 			}
 		}
 	}
-	
+
 	judgeStartToPlayerResponse() {
 		this.state = 'playerResponses';
 		for (var i = 0; i < this.players.length; ++i) {
@@ -293,11 +303,11 @@ class Game {
 		}
 		//todo start timer
 	}
-	
+
 	roundEnd() {
 		if (this.judgeIndex == this.players.length - 1) {
 			var max = 0;
-			var winnerName; 
+			var winnerName;
 			for (var i = 0; i < this.players.length; ++i) {
 				if (this.players[i].score > max) {
 					max = this.players[i].score
@@ -310,9 +320,9 @@ class Game {
 		}
 		else {
 			this.judgeIndex++
-			// call Austin's function 
+			// call Austin's function
 		}
-	}	
+	}
  } //end of game object
 
 
