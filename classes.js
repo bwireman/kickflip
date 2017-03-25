@@ -1,3 +1,6 @@
+// Constants
+const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2;
+
 // Game object
 class Game {
 
@@ -16,7 +19,7 @@ class Game {
      }
 
      addPlayer(phoneNumber, username) {
-         if (this.isValidNumber(phoneNumber) == 0) {
+         if (this.isValidNumber(phoneNumber) == NOT_PLAYER) {
              this.players.push(new Player(phoneNumber, username));
          }
          // todo already added message? maybe??!???!?!?!
@@ -43,14 +46,14 @@ class Game {
          for (var i = 0; i < this.players.length; ++i) {
              if (phoneNumber == this.players[i].phoneNumber) {
                  if (i == this.judgeIndex) {
-                     return 2;
+                     return JUDGE;
                  }
                  else {
-                     return 1;
+                     return PLAYER;
                  }
              }
          }
-         return 0;
+         return NOT_PLAYER;
      }
 
      isCreator(phoneNumber) {
@@ -121,7 +124,7 @@ class Game {
 
     //checks if a , in an answer object has already submitted an answer
      checkForInAnswers (cur_answer) {
-         
+
          for (var i = 0; i < this.answers.length; ++i) {
              if (cur_answer.playerIndex == this.answers[i].playerIndex) {
                  return true;
@@ -132,8 +135,8 @@ class Game {
 
      parseResponse (message, phoneNumber) {
 
-         if (this.isValidNumber(phoneNumber) == 1) {
-            
+         if (this.isValidNumber(phoneNumber) == PLAYER) {
+
              //makes answer object
              var cur_answer = new Answer;
              cur_answer.playerIndex = this.getPlayer(phoneNumber);
@@ -156,11 +159,11 @@ class Game {
 
 	parseJudging(message, phoneNumber) {
 		// checks that phoneNumber is the judge
-		if (this.isValidNumber(phoneNumber) == 2) {
+		if (this.isValidNumber(phoneNumber) == JUDGE) {
 			// changes choice into an int, makes sure its valid
 			var choice = parseInt(message)
 			if (!isNaN(choice)) {
-				if (choice - 1 < this.answers.length && choice > 0) {	
+				if (choice - 1 < this.answers.length && choice > 0) {
 					//choice -= 1;
 					var winningPlayerIndex = this.answers[choice].playerIndex;
 					this.players[winningPlayerIndex].score += 10;
@@ -221,4 +224,5 @@ class Answer {
     }
 }
 
+// Exports 
 module.exports.Game = Game;
