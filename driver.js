@@ -1,4 +1,4 @@
-const Game = require('./classes.js');
+const Classes = require('./classes.js');
 const EventEmitter = require('events');
 
 const CREATE_COMMAND = 'create';
@@ -17,7 +17,7 @@ class Driver {
 		var command = this.getCommand(body.Body);
 
 		if (command == CREATE_COMMAND && !this.game) {
-			onReceiveCreate(body);
+			this.onReceiveCreate(body);
 		}
         else {
             this.game.onInput(body.Body, body.From);
@@ -36,8 +36,8 @@ class Driver {
 
 		var args = this.getArgs(text, CREATE_COMMAND);
 
-		this.game = new Game(args[0], senderNumber, args[1]);
-		game.sendText(senderNumber, "Welcome to Kickflip, " + args[1] + " , Game: " + args[0] + " has been created!\n\n Have Fun!");
+		this.game = new Classes.Game(args[0], senderNumber, args[1], false);
+		this.game.sendText(senderNumber, "Welcome to Kickflip, " + args[1] + " , Game: " + args[0] + " has been created!\n\n Have Fun!");
 	}
 
 	getCommand(text) {
