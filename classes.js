@@ -180,20 +180,24 @@ class Game {
 					//choice -= 1;
 					var winningPlayerIndex = this.answers[choice].playerIndex;
 					this.players[winningPlayerIndex].score += 10;
+					var winnerName = players[winningPlayerIndex].name; 
+					for (var i = 0; i < this.players.length; ++i) {
+							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points');
+					}	
 					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
 				}
 				else {
-					// not a valid player choice
+					this.sendText(phoneNumber, 'Please send a valid choice')
 					console.log('choice is not valid')
 				}
 			}
 			else {
-				// not even a number bro
+				this.sendText(phoneNumber, 'Please send a valid choice')
 				console.log('please send a valid choice')
 			}
 		}
 		else {
-			// not a valid phone number so ignore that hoe
+			this.sendText(phoneNumber, 'The answer must come from the judge')
 			console.log('phonenumber not in players[] or phonenumber not judge')
 		}
 	}
