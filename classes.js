@@ -255,16 +255,16 @@ class Game {
 
                     if (this.judgeIndex == this.players.length) {
                         // judging + end game text
-                        var playerMsg = `The judge selected ${this.answers[choice - 1].text} and gave them 10 points`;
-                        var prevJudgeMsg = `You selected ${this.answers[choice - 1].text} and gave them 10 points`;
+                        var playerMsg = `The judge selected "${this.answers[choice - 1].text}" and gave them 10 points`;
+                        var prevJudgeMsg = `You selected "${this.answers[choice - 1].text}" and gave them 10 points`;
                         var newJudgeMsg = playerMsg;
                     }
                     else {
                         // judging + next round text
                         var newJudgeName = this.players[this.judgeIndex].name;
-                        var playerMsg = `The judge selected ${this.answers[choice - 1].text} and gave them 10 points\n\nThe next round is starting! ${newJudgeName} is the judge.\n\nWaiting for ${newJudgeName} to ask a question.`;
-                        var prevJudgeMsg = `You selected ${this.answers[choice - 1].text} and gave them 10 points\n\nThe next round is starting! ${newJudgeName} is the judge.\n\nWaiting for ${newJudgeName} to ask a question.`;
-                        var newJudgeMsg = `The judge selected ${this.answers[choice - 1].text} and gave them 10 points\n\nThe next round is starting! You are the judge.\n\nRespond with a question for the players.`;
+                        var playerMsg = `The judge selected "${this.answers[choice - 1].text}" and gave them 10 points\n\nThe next round is starting! ${newJudgeName} is the judge.\n\nWaiting for ${newJudgeName} to ask a question.`;
+                        var prevJudgeMsg = `You selected "${this.answers[choice - 1].text}" and gave them 10 points\n\nThe next round is starting! ${newJudgeName} is the judge.\n\nWaiting for ${newJudgeName} to ask a question.`;
+                        var newJudgeMsg = `The judge selected "${this.answers[choice - 1].text}" and gave them 10 points\n\nThe next round is starting! You are the judge.\n\nRespond with a question for the players.`;
                     }
                     for (var i = 0; i < this.players.length; ++i) {
                         var newMsg;
@@ -279,19 +279,6 @@ class Game {
                         }
                         this.sendText(this.players[i].phoneNumber, newMsg);
                     }
-					// var judgeName = this.players[this.judgeIndex].name;
-					// var winningPlayerIndex = this.answers[choice - 1].playerIndex;
-					// this.players[winningPlayerIndex].score += 10;
-					// for (var i = 0; i < this.players.length; ++i) {
-					// 	if (i != this.judgeIndex) {
-					// 	    this.sendText(this.players[i].phoneNumber, 'The judge selected ' + this.answers[choice - 1].text + ' and gave them 10 points\n\n' +
-					// 		'The next round is starting! '+ judgeName + ' is the judge.\n\nWaiting for '+ judgeName + ' to ask a question.');
-					// 	}
-					// 	else {
-					// 	    this.sendText(this.players[i].phoneNumber, 'The judge selected ' + this.answers[choice - 1].text + ' and gave them 10 points\n\n' +
-					// 		'The next round is starting! You are the judge.\n\nRespond with a question for the players.');
-					// 	}
-					// }
 					this.roundEnd();
 					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
 				}
