@@ -51,6 +51,7 @@
          }
          return -1;
      }
+
      onInput(message, phoneNumber) {
          // direct program based on its current state
          if (this.state == "join") {
@@ -60,11 +61,23 @@
 
          }
          else if (this.state == "playerResponses") {
-
+             parseResponse(message, phoneNumber);
          }
          else if (this.state == "judging") {
 
          }
+     }
+
+     parseResponse(message, phoneNumber) {
+
+         if (this.isValidNumber(phoneNumber) == 1) {
+             if (message.length > 140) {
+                 message = message.substr(0, 140);
+             }
+
+             this.answers.push(message);
+         }
+         
      }
 
 
