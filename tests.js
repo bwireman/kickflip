@@ -22,7 +22,11 @@ game.state = 'judgeStart';
 console.log(game);
 game.onInput('what is my favorite color', '123'); //judge creates valid question
 game.onInput('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', '123');
-game.onInput('I want this to be my question', '234');
+game.onInput('I want this to be my question', '234'); 
 game.onInput('Im not in the game even', '12489t1235');
 console.log(game);
+
+//Testing judging
+game.state = 'judging';
+console.log(game.state);
 			  

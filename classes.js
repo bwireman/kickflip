@@ -121,8 +121,8 @@ class Game {
 			// changes choice into an int, makes sure its valid
 			var choice = parseInt(message)
 			if (!isNaN(choice)) {
-				if (choice < this.players.length) {
-					this.players[choice].score += 10;
+				if (choice < this.players.length) {					 
+					this.players[answers[choice].playerIndex].score += 10;
 				}
 				else {
 					// not a valid player choice
