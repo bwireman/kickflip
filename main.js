@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
 const twilio = require('twilio');
 const Driver = require('./driver.js');
@@ -17,6 +18,10 @@ app.get('/', function (req, res) {
 	res.send('This is the server for Kickflip');
 })
 
+app.get('/logo', function(req, res) {
+	res.sendFile(path.join(__dirname+'/kickflipLogo2.png'));
+})
+
 // handle POST requests at /text
 // the function is called when a new text comes in
 app.post('/text', function(req, res) {
@@ -29,5 +34,5 @@ app.post('/text', function(req, res) {
 })
 
 app.listen(3000, function () {
-	console.log('Example app listening on port 3000!');
+	console.log("Listening on port 3000");
 })
