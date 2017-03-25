@@ -288,5 +288,19 @@ class Answer {
     }
 }
 
+function shuffleArray(array) {
+    function randomInt(max) {
+        return Math.floor(Math.random() * max + 1);
+    }
+
+    for (var i = 0; i < array.length - 1; i++) {
+        var random = randomInt(array.length - i - 1);
+        var temp = array[i];
+        array[i] = array[i + random];
+        array[i + random] = temp;
+    }
+}
+
 // Exports
 module.exports.Game = Game;
+module.exports.shuffleArray = shuffleArray;
