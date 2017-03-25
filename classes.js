@@ -222,12 +222,13 @@ class Game {
 			if (!isNaN(choice)) {
 				if (choice - 1 < this.answers.length && choice > 0) {
 					//choice -= 1;
-					var winningPlayerIndex = this.answers[choice].playerIndex;
+					var winningPlayerIndex = this.answers[choice - 1].playerIndex;
 					this.players[winningPlayerIndex].score += 10;
 					var winnerName = this.players[winningPlayerIndex].name;
 					for (var i = 0; i < this.players.length; ++i) {
 							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points');
 					}
+					this.roundEnd(); 
 					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
 				}
 				else {
@@ -256,7 +257,7 @@ class Game {
 				this.question = message;
 				console.log("question recieved, advance to state player response")
 				this.sendText(phoneNumber, 'Question recieved, now wait for player responses');
-				//todo advance state
+				this.judgeStartToPlayerResponse(); //advance state
 			}
 		}
 		else {
@@ -268,8 +269,37 @@ class Game {
 				console.log("not judge, please wait for question")
 			}
 		}
-
 	}
+	
+	judgeStartToPlayerResponse() {
+		this.state = 'playerResponses';
+		for (var i = 0; i < this.players.length; ++i) {
+			if (i != this.judgeIndex) {
+				this.sendText(this.players[i].phoneNumber, 'The question is: ' + this.question + '\nPlease send your responses for judging :)');
+			}
+		}
+		//todo start timer
+	}
+	
+	roundEnd() {
+		if (this.judgeIndex == this.players.length - 1) {
+			var max = 0;
+			var winnerName; 
+			for (var i = 0; i < this.players.length; ++i) {
+				if (this.players[i].score > max) {
+					max = this.players[i].score
+					winnerName = this.players[i].name
+				}
+			}
+			for (var i = 0; i < this.players.length; ++i) {
+				this.sendText(this.players[i].phoneNumber, 'Game over! The winner is ' + winnerName + ' with ' + max + ' points!');
+			}
+		}
+		else {
+			this.judgeIndex++
+			// call Austin's function 
+		}
+	}	
  } //end of game object
 
 
