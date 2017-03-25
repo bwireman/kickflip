@@ -113,7 +113,23 @@ class Game {
                  return;
              }
          }
-
+		 
+		 // check for invites
+		 if (number == this.creatorPhoneNumber) {
+			msg = msg.trim(); // 2487897243,1234567890,
+			var inviteNumbers = [];
+			var numberDigits = 0;
+			while (msg.length > 9) {				
+				var tempNumber = "+1" + msg.substr(0, 10);
+				inviteNumbers.push(tempNumber);	
+				msg = msg.slice(11, msg.length);
+				msg = msg.trim();
+			}
+			for (var i = 0; i < inviteNumbers.length; ++i) {
+				this.sendText(inviteNumbers[i], "You've been invited to the game! If you want to join, send back \"" + this.name + "\", \"yourname\" without quotes.");
+			}
+			return;
+		 }		 
 
          // game_name, user_name
          msg = msg.split(",");
@@ -238,6 +254,10 @@ class Game {
                  if(this.answers.length == (this.players.length - 1)) {
                      this.playerResponseToJudging();
                  }
+             }
+             else//if they've already responded
+             {
+                 this.sendText(phoneNumber, "You've already submitted an answer!");
              }
 
          }

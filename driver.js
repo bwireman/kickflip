@@ -36,9 +36,10 @@ class Driver {
 
 		var args = this.getArgs(text, CREATE_COMMAND);
 
-		this.game = new Classes.Game(args[0], senderNumber, args[1], this.driverEmitter, false);
-		//this.game = new Classes.Game(args[0], senderNumber, args[1]);
-		this.game.sendText(senderNumber, "Welcome to Kickflip, " + args[1] + " , Game: " + args[0] + " has been created!\n\n Have Fun!");
+		this.game = new Classes.Game(args[0], senderNumber, args[1], false);
+		this.game.sendText(senderNumber, "Welcome to Kickflip, " + args[1] + " , Game: " + args[0] + " has been created!\n\n Have Fun!\n" +
+						   "Invite your friends by texting their 10 digit phone numbers separated by commas, or tell them to text \" "+ args[0] + ", \"name\" to  " + 
+						   twilioNumber + ". Text \"start\" to begin your game!");
 	}
 
 	getCommand(text) {
