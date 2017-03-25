@@ -37,6 +37,7 @@ class Driver {
 		var args = this.getArgs(text, CREATE_COMMAND);
 
 		this.game = new Game(args[0], senderNumber, args[1]);
+		game.sendText(senderNumber, "Welcome to Kickflip, " + args[1] + " , Game: " + args[0] + " has been created!\n\n Have Fun!");
 	}
 
 	getCommand(text) {
