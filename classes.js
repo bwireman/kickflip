@@ -92,11 +92,6 @@ class Game {
          }
          else if (this.state == "playerResponses") {
              this.parseResponse(message, phoneNumber);
-
-             //if we have all the answers (todo timer eventually)
-             if(this.answers.length == (this.players.length - 1)) {
-                 this.playerResponseToJudging();
-             }
          }
          else if (this.state == "judging") {
 		  //todo parse judging
@@ -193,7 +188,6 @@ class Game {
 
      parseResponse (message, phoneNumber) {
          if (this.isValidNumber(phoneNumber) == PLAYER) {
-             this.sendText(phoneNumber, "The question is \"" +  this.question + "\" \n please answer");
              //makes answer object
              var cur_answer = new Answer;
              cur_answer.playerIndex = this.getPlayer(phoneNumber);
@@ -208,6 +202,25 @@ class Game {
                  //pushes to the answers array
                  cur_answer.text = message;
                  this.answers.push(cur_answer);
+
+                 //if we have all the answers (todo timer eventually)
+                 if(this.answers.length == (this.players.length - 1)) {
+                     this.shuffleArray(this.answers);
+
+                     var all_answers;
+
+                     for(var x = 0; x < this.answers.length; ++x) {
+                         all_answers += this.answers[x] + "\n";
+                     }
+
+
+                     //send to all players
+                     for(var i of this.players) {
+                         this.sendText(phoneNumber, "The answers are " + all_answers);
+                     }
+
+                     this.playerResponseToJudging();
+                 }
              }
 
          }
