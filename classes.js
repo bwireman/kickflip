@@ -61,13 +61,14 @@ class Game {
 
          }
          else if (this.state == "playerResponses") {
-
+             parseResponse(message, phoneNumber);
          }
          else if (this.state == "judging") {
-
+		  //todo parse judging
          }
      }
 
+<<<<<<< HEAD
      // Parsing input functions
      parseJoinInput(msg, number) {
          // check for start
@@ -102,7 +103,41 @@ class Game {
 
      }
 
+=======
+     parseResponse(message, phoneNumber) {
 
+         if (this.isValidNumber(phoneNumber) == 1) {
+             if (message.length > 140) {
+                 message = message.substr(0, 140);
+             }
+
+             this.answers.push(message);
+         }
+         
+     }
+>>>>>>> 037024636075dab51ae1b5cb43a74dfc684db8fb
+
+	parseJudging(message, phoneNumber) {
+		// checks that phoneNumber is the judge 
+		if (this.isValidNumber(phoneNumber) == 2) {
+			// changes choice into an int, makes sure its valid 
+			var choice = parseInt(message)
+			if (!isNaN(choice)) {
+				if (choice < this.players.length) {
+					this.players[choice].score += 10; 
+				}
+				else {
+					// not a valid player choice 
+				}
+			}
+			else {
+				// not even a number bro 
+			}
+		}
+		else {
+			// not a valid phone number so ignore that hoe 
+		}
+	}
  } //end of game object
 
  /*
