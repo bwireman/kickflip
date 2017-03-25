@@ -4,5 +4,7 @@ ssh -i "kickflip.pem" ubuntu@ec2-52-14-104-27.us-east-2.compute.amazonaws.com <<
 sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 3000
 cd kickflip/
 git pull
-node main.js
+npm install
+forever stopall
+forever start main.js
 ENDSTART
