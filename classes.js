@@ -1,5 +1,5 @@
 // Constants
-const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_TIME = 15;
+const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_TIME = 180;
 
 // Game object
 class Game {
@@ -113,7 +113,23 @@ class Game {
                  return;
              }
          }
-
+		 
+		 // check for invites
+		 if (number == this.creatorPhoneNumber) {
+			msg = msg.trim(); // 2487897243,1234567890,
+			var inviteNumbers = [];
+			var numberDigits = 0;
+			while (msg.length > 9) {				
+				var tempNumber = "+1" + msg.substr(0, 10);
+				inviteNumbers.push(tempNumber);	
+				msg = msg.slice(11, msg.length);
+				msg = msg.trim();
+			}
+			for (var i = 0; i < inviteNumbers.length; ++i) {
+				this.sendText(inviteNumbers[i], "You've been invited to the game! If you want to join, send back \"" + this.name + "\", \"yourname\" without quotes.");
+			}
+			return;
+		 }		 
 
          // game_name, user_name
          msg = msg.split(",");
@@ -190,10 +206,10 @@ class Game {
          //send to all players
          for(var i = 0; i < this.players.length; ++i) {
              if (i != this.judgeIndex) {
-                 this.sendText(this.players[i].phoneNumber, "The answers are...\n" + all_answers);
+                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers);
              }
              else {
-                 this.sendText(this.players[i].phoneNumber, "The answers are...\n" + all_answers + "\n\n Respond with a number to choose the best answer!");
+                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers + "\n Respond with a number to choose the best answer!");
              }
          }
 
@@ -252,20 +268,37 @@ class Game {
 			var choice = parseInt(message)
 			if (!isNaN(choice)) {
 				if (choice - 1 < this.answers.length && choice > 0) {
-					//choice -= 1;
-					var judgeName = this.players[this.judgeIndex].name;
-					var winningPlayerIndex = this.answers[choice - 1].playerIndex;
-					this.players[winningPlayerIndex].score += 10;
-					for (var i = 0; i < this.players.length; ++i) {
-						if (i != this.judgeIndex) {
-						    this.sendText(this.players[i].phoneNumber, 'The judge selected ' + this.answers[choice - 1].text + ' and gave them 10 points\n' +
-							'`The next round is starting! '+ judgeName + ' `is the judge.\n\nWaiting for '+ judgeName + ' to ask a question.`');
-						}
-						else {
-						    this.sendText(this.players[i].phoneNumber, 'The judge selected ' + this.answers[choice - 1].text + ' and gave them 10 points\n' +
-							'`The next round is starting! You are the judge. \n\nRespond with a question for the players.`');
-						}
-					}
+                    // Round is over, increase judge index
+                    this.judgeIndex++;
+                    var winningPlayerIndex = this.answers[choice - 1].playerIndex;
+                    this.players[winningPlayerIndex].score += 10;
+
+                    if (this.judgeIndex == this.players.length) {
+                        // judging + end game text
+                        var playerMsg = `The judge selected "${this.answers[choice - 1].text}" and gave them 10 points`;
+                        var prevJudgeMsg = `You selected "${this.answers[choice - 1].text}" and gave them 10 points`;
+                        var newJudgeMsg = playerMsg;
+                    }
+                    else {
+                        // judging + next round text
+                        var newJudgeName = this.players[this.judgeIndex].name;
+                        var playerMsg = `The judge selected "${this.answers[choice - 1].text}" and gave them 10 points\n\nThe next round is starting! ${newJudgeName} is the judge.\n\nWaiting for ${newJudgeName} to ask a question.`;
+                        var prevJudgeMsg = `You selected "${this.answers[choice - 1].text}" and gave them 10 points\n\nThe next round is starting! ${newJudgeName} is the judge.\n\nWaiting for ${newJudgeName} to ask a question.`;
+                        var newJudgeMsg = `The judge selected "${this.answers[choice - 1].text}" and gave them 10 points\n\nThe next round is starting! You are the judge.\n\nRespond with a question for the players.`;
+                    }
+                    for (var i = 0; i < this.players.length; ++i) {
+                        var newMsg;
+                        if (i == this.judgeIndex - 1) {
+                            newMsg = prevJudgeMsg;
+                        }
+                        else if (i == this.judgeIndex) {
+                            newMsg = newJudgeMsg;
+                        }
+                        else {
+                            newMsg = playerMsg;
+                        }
+                        this.sendText(this.players[i].phoneNumber, newMsg);
+                    }
 					this.roundEnd();
 					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
 				}
@@ -293,8 +326,8 @@ class Game {
 			}
 			else {
 				this.question = message;
-				console.log("question recieved, advance to state player response")
-				this.sendText(phoneNumber, 'Question recieved, now wait for player responses');
+				console.log("question received, advance to state player response")
+				this.sendText(phoneNumber, 'Question received, now wait for player responses');
 				this.judgeStartToPlayerResponse(); //advance state
 			}
 		}
@@ -313,7 +346,7 @@ class Game {
 		this.state = 'playerResponses';
 		for (var i = 0; i < this.players.length; ++i) {
 			if (i != this.judgeIndex) {
-				this.sendText(this.players[i].phoneNumber, 'The question is: ' + this.question + '\nPlease send your responses for judging :)');
+				this.sendText(this.players[i].phoneNumber, 'The question is: ' + this.question + '\nPlease send your responses for judging.');
 			}
 		}
 		//todo start timer
@@ -324,11 +357,11 @@ class Game {
 
 	roundEnd() {
         this.answers = [];
-		if (this.judgeIndex == this.players.length - 1) {
+		if (this.judgeIndex == this.players.length) {
 			this.gameOver();
 		}
 		else {
-			this.judgeIndex++
+			// this.judgeIndex++
 			// call Austin's function
 			this.roundStart();
 		}
