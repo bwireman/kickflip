@@ -1,4 +1,5 @@
 const Game = require('./classes.js');
+const EventEmitter = require('events');
 
 const CREATE_COMMAND = 'create';
 
@@ -38,5 +39,7 @@ class Driver {
 		return text.split(' ')[0];
 	}
 }
+
+class DriverEmitter extends EventEmitter {}
 
 module.exports = Driver;
