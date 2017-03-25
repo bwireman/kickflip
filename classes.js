@@ -265,7 +265,7 @@ class Game {
 			}
 		}
 		else {
-			this.sendText(phoneNumber, 'The answer must come from the judge')
+			this.sendText(phoneNumber, "You\'re not the judge!");
 			console.log('phonenumber not in players[] or phonenumber not judge')
 		}
 	}
