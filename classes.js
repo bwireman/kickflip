@@ -88,10 +88,15 @@ class Game {
          }
          else if (this.state == "judgeStart") {
 			 console.log('calling parse judgeStart');
-		     this.parseJudgeStart(message, phoneNumber);
+			 this.parseJudgeStart(message, phoneNumber);
          }
          else if (this.state == "playerResponses") {
              this.parseResponse(message, phoneNumber);
+
+             //if we have all the answers (todo timer eventually)
+             if(this.answers.length == (this.players.length - 1)) {
+                 this.playerResponseToJudging();
+             }
          }
          else if (this.state == "judging") {
 		  //todo parse judging
@@ -108,6 +113,7 @@ class Game {
              if (msg == 'start') {
                  // enter player response stage
                  // shuffle players, set judge index to 0
+                 this.startGame();
              }
          }
 
@@ -133,7 +139,49 @@ class Game {
              console.log("message had the wrong format");
              this.sendText(number, "Wrong format! Respond with \"" + this.name + ", USERNAME\"");
          }
+     }
 
+     startGame() {
+         shuffleArray(this.players);
+         this.judgeIndex = 0;
+         var judgeName = this.players[this.judgeIndex].name;
+         var playerMsg = `The game is starting! ${judgeName} is the first judge.\n\n
+            Waiting for ${judgeName} to ask a question.`;
+         var judgeMsg = `The game is starting! You are the first judge. \n\n
+            Respond with a question for the players.`;
+
+        for (var i = 0; i < players.length; i++) {
+            if (i == this.judgeIndex) {
+                sendText(this.players[i].phoneNumber, judgeMsg);
+            }
+            else {
+                sendText(this.players[i].phoneNumber, playerMsg);
+            }
+        }
+        this.state = 'judgeStart';
+        //roundStart(false);
+     }
+
+     roundStart() {
+         this.state = 'judgeStart';
+         var judgeName = this.players[this.judgeIndex].name;
+         var playerMsg = `The next round is starting! ${judgeName} is the judge.\n\n
+            Waiting for ${judgeName} to ask a question.`;
+         var judgeMsg = `The next round is starting! You are the judge. \n\n
+            Respond with a question for the players.`;
+
+        for (var i = 0; i < players.length; i++) {
+            if (i == this.judgeIndex) {
+                sendText(this.players[i].phoneNumber, judgeMsg);
+            }
+            else {
+                sendText(this.players[i].phoneNumber, playerMsg);
+            }
+        }
+     }
+
+     playerResponseToJudging () {
+         this.state = "judging";
      }
 
     //checks if a , in an answer object has already submitted an answer
@@ -153,7 +201,7 @@ class Game {
              //makes answer object
              var cur_answer = new Answer;
              cur_answer.playerIndex = this.getPlayer(phoneNumber);
-             //if they haven't subumited an answer yet
+             //if they haven't submited an answer yet
              if (!(this.checkForInAnswers(cur_answer))) {
 
                  //cuts answer down if larger than 140 chars
@@ -269,5 +317,19 @@ class Answer {
     }
 }
 
+function shuffleArray(array) {
+    function randomInt(max) {
+        return Math.floor(Math.random() * max + 1);
+    }
+
+    for (var i = 0; i < array.length - 1; i++) {
+        var random = randomInt(array.length - i - 1);
+        var temp = array[i];
+        array[i] = array[i + random];
+        array[i + random] = temp;
+    }
+}
+
 // Exports
 module.exports.Game = Game;
+module.exports.shuffleArray = shuffleArray;
