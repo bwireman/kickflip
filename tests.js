@@ -25,4 +25,16 @@ game.onInput('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 game.onInput('I want this to be my question', '234');
 game.onInput('Im not in the game even', '12489t1235');
 console.log(game);
-			  
+
+
+/********  Driver tests  *********/
+const Driver = require('./driver.js');
+var driver = new Driver.Driver();
+
+var args = driver.getArgs(' create MyGameName ,   MyName  ', 'create');
+if (args[0] != 'MyGameName') {
+	throw new Error('Driver\'s getArgs is wrong');
+}
+if (args[1] != 'MyName') {
+	throw new Error('Driver\'s getArgs is wrong');
+}
