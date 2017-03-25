@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const twilio = require('twilio');
+const Driver = require('./driver.js');
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
@@ -17,7 +19,10 @@ app.get('/', function (req, res) {
 // the function is called when a new text comes in
 app.post('/text', function(req, res) {
 	var body = req.body;
-	res.send("<Response><Message>Hello</Message></Response>");
+	var twiml = new twilio.TwimlResponse();
+	twiml.message('Hello! From your friends at Kickflip!');
+	res.writeHead(200, {'Content-Type': 'text/xml'});
+	res.end(twiml.toString());
 })
 
 app.listen(3000, function () {
