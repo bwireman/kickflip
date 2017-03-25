@@ -1,5 +1,5 @@
 // Constants
-const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140;
+const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_TIME = 15;
 
 // Game object
 class Game {
@@ -16,6 +16,7 @@ class Game {
 		 this.question = '';
          this.driverEmitter = driverEmitter;
          this.debugMode = debugMode;
+         this.timer = {};
          this.addPlayer(phoneNumber, username);
      }
 
@@ -162,12 +163,14 @@ class Game {
          var judgeMsg = `The next round is starting! You are the judge. \n\nRespond with a question for the players.`;
 
         for (var i = 0; i < this.players.length; i++) {
-            if (i == this.judgeIndex) {
-                this.sendText(this.players[i].phoneNumber, judgeMsg);
-            }
-            else {
-                this.sendText(this.players[i].phoneNumber, playerMsg);
-            }
+			if (this.judgeIndex == 0) {
+				if (i == this.judgeIndex) {
+					this.sendText(this.players[i].phoneNumber, judgeMsg);
+				}
+				else {
+					this.sendText(this.players[i].phoneNumber, playerMsg);
+				}
+			}
         }
      }
 
@@ -175,6 +178,7 @@ class Game {
 
      playerResponseToJudging() {
          shuffleArray(this.answers);
+         clearTimeout(this.timer);
 
          var all_answers = '';
 
@@ -245,11 +249,18 @@ class Game {
 			if (!isNaN(choice)) {
 				if (choice - 1 < this.answers.length && choice > 0) {
 					//choice -= 1;
+					var judgeName = this.players[this.judgeIndex].name;
 					var winningPlayerIndex = this.answers[choice - 1].playerIndex;
 					this.players[winningPlayerIndex].score += 10;
-					var winnerName = this.players[winningPlayerIndex].name;
 					for (var i = 0; i < this.players.length; ++i) {
-							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points');
+						if (i != this.judgeIndex) {
+						    this.sendText(this.players[i].phoneNumber, 'The judge selected ' + this.answers[choice - 1].text + ' and gave them 10 points\n' +
+							'`The next round is starting! '+ judgeName + ' `is the judge.\n\nWaiting for '+ judgeName + ' to ask a question.`');
+						}
+						else {
+						    this.sendText(this.players[i].phoneNumber, 'The judge selected ' + this.answers[choice - 1].text + ' and gave them 10 points\n' +
+							'`The next round is starting! You are the judge. \n\nRespond with a question for the players.`');
+						}
 					}
 					this.roundEnd();
 					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
@@ -302,6 +313,9 @@ class Game {
 			}
 		}
 		//todo start timer
+        this.timer = setTimeout( () => {
+            this.playerResponseToJudging();
+        }, RESPONSE_TIME * 1000);
 	}
 
 	roundEnd() {
@@ -325,8 +339,17 @@ class Game {
 				winnerName = this.players[i].name
 			}
 		}
+
+		var gameScoreboard = "Game over!\nName   Score\n";
+
 		for (var i = 0; i < this.players.length; ++i) {
-			this.sendText(this.players[i].phoneNumber, 'Game over! The winner is ' + winnerName + ' with ' + max + ' points!');
+		    gameScoreboard += this.players[i].name + "   " + this.players[i].score + "\n";
+		}
+		gameScoreboard += 'The winner is ' + winnerName + ' with ' + max + " points!\n"
+		gameScoreboard += winnerName + " is the Kickflip king!"
+
+		for (var i = 0; i < this.players.length; ++i) {
+			this.sendText(this.players[i].phoneNumber, gameScoreboard);
 		}
 		//todo send event emitter to driver function and clear memory and shiz
 	}
