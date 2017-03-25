@@ -2,11 +2,11 @@
 class Game {
 
      constructor(gameName, phoneNumber, username) {
-         this.name = name;
+         this.name = gameName;
          this.creatorPhoneNumber = phoneNumber;
 
          // stuff
-         this.state = '';
+         this.state = 'join';
          this.players = [];
          this.judgeIndex = 0;
          this.answers = [];
@@ -26,7 +26,7 @@ class Game {
          // 0: not in player array
          // 1: normal player (not judge)
          // 2: judge
-         for (i = 0; i < this.players.length; ++i) {
+         for (var i = 0; i < this.players.length; ++i) {
              if (phoneNumber == this.players[i].phoneNumber) {
                  if (i == this.judgeIndex) {
                      return 2;
@@ -55,13 +55,13 @@ class Game {
      onInput(message, phoneNumber) {
          // direct program based on its current state
          if (this.state == "join") {
-             parseJoinInput(message, phoneNumber);
+             this.parseJoinInput(message, phoneNumber);
          }
          else if (this.state == "judgestart") {
 		     this.parseJudgeStart(message, phoneNumber);
          }
          else if (this.state == "playerResponses") {
-             parseResponse(message, phoneNumber);
+             this.parseResponse(message, phoneNumber);
          }
          else if (this.state == "judging") {
 		  //todo parse judging
@@ -147,7 +147,6 @@ class Game {
 			}
 		}
 	}
-    
  } //end of game object
 
  /*
@@ -170,3 +169,5 @@ class Answer {
         this.text = text;
     }
 }
+
+module.exports.Game = Game;
