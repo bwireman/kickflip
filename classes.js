@@ -200,7 +200,6 @@ class Game {
 	}
 
 	parseJudgeStart(message, phoneNumber) {
-		console.log(typeof(phoneNumber));
 		if (this.isValidNumber(phoneNumber) == 2) {
 			if (message.length > 140) {				
 				this.sendText(phoneNumber, 'Error: response too long. Please send another message < 140 characters');
