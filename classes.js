@@ -162,12 +162,14 @@ class Game {
          var judgeMsg = `The next round is starting! You are the judge. \n\nRespond with a question for the players.`;
 
         for (var i = 0; i < this.players.length; i++) {
-            if (i == this.judgeIndex) {
-                this.sendText(this.players[i].phoneNumber, judgeMsg);
-            }
-            else {
-                this.sendText(this.players[i].phoneNumber, playerMsg);
-            }
+			if judgeIndexi == 0) {
+				if (i == this.judgeIndex) {
+					this.sendText(this.players[i].phoneNumber, judgeMsg);
+				}
+				else {
+					this.sendText(this.players[i].phoneNumber, playerMsg);
+				}
+			}
         }
      }
 
@@ -245,11 +247,19 @@ class Game {
 			if (!isNaN(choice)) {
 				if (choice - 1 < this.answers.length && choice > 0) {
 					//choice -= 1;
-					var winningPlayerIndex = this.answers[choice - 1].playerIndex;
+					var judgeName = this.players[this.judgeIndex].name;
+\					var winningPlayerIndex = this.answers[choice - 1].playerIndex;
 					this.players[winningPlayerIndex].score += 10;
 					var winnerName = this.players[winningPlayerIndex].name;
 					for (var i = 0; i < this.players.length; ++i) {
-							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points');
+						if (i == this.judgeIndex) {
+							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points\n'
+							`The next round is starting! ${judgeName} is the judge.\n\nWaiting for ${judgeName} to ask a question.`');
+						}
+						else {
+							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points\n'
+							`The next round is starting! You are the judge. \n\nRespond with a question for the players.`');
+						}							
 					}
 					this.roundEnd();
 					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
