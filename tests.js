@@ -28,4 +28,15 @@ game.onInput('what is my favorite color', '123'); //judge creates valid question
 game.onInput('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', '123');
 game.onInput('I want this to be my question', '234');
 game.onInput('Im not in the game even', '12489t1235');
+//console.log(game);
 console.log(game);
+
+/********  Driver tests  *********/
+
+var args = driver.getArgs(' create MyGameName ,   MyName  ', 'create');
+if (args[0] != 'MyGameName') {
+	throw new Error('Driver\'s getArgs is wrong');
+}
+if (args[1] != 'MyName') {
+	throw new Error('Driver\'s getArgs is wrong');
+}

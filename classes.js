@@ -58,7 +58,7 @@ class Game {
      }
 
      getPlayer(phoneNumber) {
-         for (i = 0; i < this.players.length; ++i) {
+         for (var i = 0; i < this.players.length; ++i) {
              if (phoneNumber == this.players[i].phoneNumber) {
                  return i;
              }
@@ -117,14 +117,37 @@ class Game {
 
      }
 
-     parseResponse(message, phoneNumber) {
+    //checks if a , in an answer object has already submitted an answer
+     checkForInAnswers (cur_answer) {
+         
+         for (var i = 0; i < this.answers.length; ++i) {
+             if (cur_answer.playerIndex == this.answers[i].playerIndex) {
+                 return true;
+             }
+         }
+         return false;
+     }
+
+     parseResponse (message, phoneNumber) {
 
          if (this.isValidNumber(phoneNumber) == 1) {
-             if (message.length > 140) {
-                 message = message.substr(0, 140);
+            
+             //makes answer object
+             var cur_answer = new Answer;
+             cur_answer.playerIndex = this.getPlayer(phoneNumber);
+             //if they haven't subumited an answer yet
+             if (!(this.checkForInAnswers(cur_answer))) {
+
+                 //cuts answer down if larger than 140 chars
+                 if (message.length > 140) {
+                     message = message.substr(0, 140);
+                 }
+
+                 //pushes to the answers array
+                 cur_answer.text = message;
+                 this.answers.push(cur_answer);
              }
 
-             this.answers.push(message);
          }
 
      }
