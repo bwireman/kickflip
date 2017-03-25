@@ -34,9 +34,6 @@ console.log(game);
 game.state = 'judgeStart';
 console.log(game);
 game.onInput('what is my favorite color', numbers.austin); //judge creates valid question
-game.onInput('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', numbers.austin);
-game.onInput('I want this to be my question', numbers.nick);
-game.onInput('Im not in the game even', '12489t1235');
 //console.log(game);
 console.log(game);
 

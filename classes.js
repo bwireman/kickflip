@@ -212,7 +212,7 @@ class Game {
 				this.question = message;
 				console.log("question recieved, advance to state player response")
 				this.sendText(phoneNumber, 'Question recieved, now wait for player responses');
-				//todo advance state
+				this.judgeStartToPlayerResponse(); //advance state
 			}
 		}
 		else {
@@ -224,8 +224,19 @@ class Game {
 				console.log("not judge, please wait for question")
 			}
 		}
-
 	}
+	
+	judgeStartToPlayerResponse() {
+		this.state = 'playerResponses';
+		for (var i = 0; i < this.players.length; ++i) {
+			if (i != this.judgeIndex) {
+				this.sendText(this.players[i].phoneNumber, 'The question is: ' + this.question + '\nPlease send your responses for judging :)');
+			}
+		}
+		//todo start timer
+	}
+	
+	
  } //end of game object
 
  /*
