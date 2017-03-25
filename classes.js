@@ -10,7 +10,7 @@
          this.players = [];
          this.judgeIndex = 0;
          this.answers = [];
-
+		 this.question = '';
          this.addPlayer(phoneNumber, username);
      }
 
@@ -57,7 +57,7 @@
 
          }
          else if (this.state == "judgestart") {
-
+		     this.parseJudgeStart(message, phoneNumber);
          }
          else if (this.state == "playerResponses") {
 
@@ -66,6 +66,8 @@
 		  //todo parse judging
          }
      }
+	 
+	 
 	parseJudging(message, phoneNumber) {
 		// checks that phoneNumber is the judge 
 		if (this.isValidNumber(phoneNumber) == 2) {
@@ -86,6 +88,18 @@
 		else {
 			// not a valid phone number so ignore that hoe 
 		}
+	}
+	
+	parseJudgeStart(message, phoneNumber) {
+		if (this.isValidNumber == 2) {
+			if (message.length > 140) {
+				//todo send message to judge, need another question
+			}
+			else {
+				this.question = message;
+				//todo advance state
+			}
+		}	
 	}
  } //end of game object
 
