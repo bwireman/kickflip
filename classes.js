@@ -114,6 +114,7 @@ class Game {
                  // enter player response stage
                  // shuffle players, set judge index to 0
                  this.startGame();
+                 return;
              }
          }
 
@@ -145,37 +146,32 @@ class Game {
          shuffleArray(this.players);
          this.judgeIndex = 0;
          var judgeName = this.players[this.judgeIndex].name;
-         var playerMsg = `The game is starting! ${judgeName} is the first judge.\n\n
-            Waiting for ${judgeName} to ask a question.`;
-         var judgeMsg = `The game is starting! You are the first judge. \n\n
-            Respond with a question for the players.`;
+         var playerMsg = `The game is starting! ${judgeName} is the first judge.\n\nWaiting for ${judgeName} to ask a question.`;
+         var judgeMsg = `The game is starting! You are the first judge. \n\nRespond with a question for the players.`;
 
-        for (var i = 0; i < players.length; i++) {
+        for (var i = 0; i < this.players.length; i++) {
             if (i == this.judgeIndex) {
-                sendText(this.players[i].phoneNumber, judgeMsg);
+                this.sendText(this.players[i].phoneNumber, judgeMsg);
             }
             else {
-                sendText(this.players[i].phoneNumber, playerMsg);
+                this.sendText(this.players[i].phoneNumber, playerMsg);
             }
         }
         this.state = 'judgeStart';
-        //roundStart(false);
      }
 
      roundStart() {
          this.state = 'judgeStart';
          var judgeName = this.players[this.judgeIndex].name;
-         var playerMsg = `The next round is starting! ${judgeName} is the judge.\n\n
-            Waiting for ${judgeName} to ask a question.`;
-         var judgeMsg = `The next round is starting! You are the judge. \n\n
-            Respond with a question for the players.`;
+         var playerMsg = `The next round is starting! ${judgeName} is the judge.\n\nWaiting for ${judgeName} to ask a question.`;
+         var judgeMsg = `The next round is starting! You are the judge. \n\nRespond with a question for the players.`;
 
-        for (var i = 0; i < players.length; i++) {
+        for (var i = 0; i < this.players.length; i++) {
             if (i == this.judgeIndex) {
-                sendText(this.players[i].phoneNumber, judgeMsg);
+                this.sendText(this.players[i].phoneNumber, judgeMsg);
             }
             else {
-                sendText(this.players[i].phoneNumber, playerMsg);
+                this.sendText(this.players[i].phoneNumber, playerMsg);
             }
         }
      }
@@ -276,9 +272,6 @@ class Game {
 	}
  } //end of game object
 
- /*
-new game text: create GAME_NAME, MY_NAME
- */
 
 // Player object
 class Player {

@@ -1,8 +1,6 @@
 const Driver = require('./driver.js');
 const Classes = require('./classes.js');
 
-// game.sendText(['+12488824432','+12485348895','+18172230083'], 'tests.js');
-
 const numbers = {
     austin: "+12488824432",
     nick: "+12487361831",
