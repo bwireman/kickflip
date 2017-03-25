@@ -112,7 +112,23 @@ class Game {
                  return;
              }
          }
-
+		 
+		 // check for invites
+		 if (number == this.creatorPhoneNumber) {
+			msg = msg.trim(); // 2487897243,1234567890,
+			var inviteNumbers = [];
+			var numberDigits = 0;
+			while (msg.length > 9) {				
+				var tempNumber = "+1" + msg.substr(0, 10);
+				inviteNumbers.push(tempNumber);	
+				msg = msg.slice(11, msg.length);
+				msg = msg.trim();
+			}
+			for (var i = 0; i < inviteNumbers.length; ++i) {
+				this.sendText(inviteNumbers[i], "You've been invited to the game! If you want to join, send back \"" + this.name + "\", \"yourname\" without quotes.");
+			}
+			return;
+		 }		 
 
          // game_name, user_name
          msg = msg.split(",");
@@ -162,7 +178,7 @@ class Game {
          var judgeMsg = `The next round is starting! You are the judge. \n\nRespond with a question for the players.`;
 
         for (var i = 0; i < this.players.length; i++) {
-			if judgeIndexi == 0) {
+			if (this.judgeIndex == 0) {
 				if (i == this.judgeIndex) {
 					this.sendText(this.players[i].phoneNumber, judgeMsg);
 				}
@@ -253,12 +269,12 @@ class Game {
 					var winnerName = this.players[winningPlayerIndex].name;
 					for (var i = 0; i < this.players.length; ++i) {
 						if (i == this.judgeIndex) {
-							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points\n'
-							`The next round is starting! ${judgeName} is the judge.\n\nWaiting for ${judgeName} to ask a question.`');
+							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points\n' 
+							`The next round is starting! ${judgeName} is the judge.\n\nWaiting for ${judgeName} to ask a question.`);
 						}
 						else {
 							this.sendText(this.players[i].phoneNumber, 'The judge selected ' + winnerName + ' and gave them 10 points\n'
-							`The next round is starting! You are the judge. \n\nRespond with a question for the players.`');
+							`The next round is starting! You are the judge. \n\nRespond with a question for the players.`);
 						}							
 					}
 					this.roundEnd();
