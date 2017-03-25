@@ -234,6 +234,10 @@ class Game {
                      this.playerResponseToJudging();
                  }
              }
+             else//if they've already responded
+             {
+                 this.sendText(phoneNumber, "You've already submitted an answer!");
+             }
 
          }
 
