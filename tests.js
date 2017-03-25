@@ -25,4 +25,5 @@ game.onInput('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 game.onInput('I want this to be my question', '234');
 game.onInput('Im not in the game even', '12489t1235');
 //console.log(game);
+console.log(game);
 			  
