@@ -1,7 +1,7 @@
 // Game object
 class Game {
 
-     constructor(gameName, phoneNumber, username) {
+     constructor(gameName, phoneNumber, username, driverEmitter = {}) {
          this.name = gameName;
          this.creatorPhoneNumber = phoneNumber;
 
@@ -11,6 +11,7 @@ class Game {
          this.judgeIndex = 0;
          this.answers = [];
 		 this.question = '';
+         this.driverEmitter = driverEmitter;
          this.addPlayer(phoneNumber, username);
      }
 
@@ -19,6 +20,19 @@ class Game {
              this.players.push(new Player(phoneNumber, username));
          }
          // todo already added message? maybe??!???!?!?!
+     }
+
+     // sendText(phoneNumber, msg);
+     // sendText(phoneNumber array, msg);
+     sendText(numbers, msg) {
+         if (typeof(numbers) == "string") {
+             this.driverEmitter.emit('sendText', numbers, msg);
+         }
+         else {
+             for (var i = 0; i < numbers.length; ++i) {
+                 this.driverEmitter.emit('sendText', numbers[i], msg);
+             }
+         }
      }
 
      isValidNumber(phoneNumber) {

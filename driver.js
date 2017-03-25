@@ -3,9 +3,14 @@ const EventEmitter = require('events');
 
 const CREATE_COMMAND = 'create';
 
+class DriverEmitter extends EventEmitter {}
+
 class Driver {
 	constructor() {
 		this.game = null;
+        this.driverEmitter = new DriverEmitter;
+
+        this.driverEmitter.on('sendText', sendText);
 	}
 
 	onReceiveText(body) {
@@ -48,8 +53,28 @@ class Driver {
 
 		return args;
 	}
+
+
 }
 
-class DriverEmitter extends EventEmitter {}
+// Twilio stuff
+const twilioSid = 'AC4f40f7f29e539edbb5e7d1e3c9e66ddd';
+const twilioToken = '88e8ec36215e9645adccd41d54c8bbd3';
+const twilioNumber = '+17344186484';
+const twilio = require('twilio');
+const client = new twilio.RestClient(twilioSid, twilioToken);
+
+function sendText(phoneNumber, msg) {
+    console.log('sending text...');
+    client.messages.create({
+        body: msg,
+        to: phoneNumber,
+        from: twilioNumber
+    }, (err, msg) => {
+        if (err) {
+            console.log('Error sending message: ' + err.message);
+        }
+    })
+}
 
 module.exports.Driver = Driver;
