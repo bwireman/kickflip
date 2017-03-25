@@ -1,5 +1,5 @@
 // Game object
- class Game {
+class Game {
 
      constructor(gameName, phoneNumber, username) {
          this.name = name;
@@ -10,7 +10,7 @@
          this.players = [];
          this.judgeIndex = 0;
          this.answers = [];
-
+		 this.question = '';
          this.addPlayer(phoneNumber, username);
      }
 
@@ -51,23 +51,103 @@
          }
          return -1;
      }
+
      onInput(message, phoneNumber) {
          // direct program based on its current state
          if (this.state == "join") {
-
+             parseJoinInput(message, phoneNumber);
          }
          else if (this.state == "judgestart") {
-
+		     this.parseJudgeStart(message, phoneNumber);
          }
          else if (this.state == "playerResponses") {
-
+             parseResponse(message, phoneNumber);
          }
          else if (this.state == "judging") {
-
+		  //todo parse judging
          }
      }
 
+     // Parsing input functions
+     parseJoinInput(msg, number) {
+         // check for start
+         if (number == this.creatorPhoneNumber) {
+             msg = msg.trim().toLowerCase();
+             if (msg == 'start') {
+                 // enter player response stage
+                 // shuffle players, set judge index to 0
+             }
+         }
 
+
+         // game_name, user_name
+         msg = msg.split(",");
+         if (msg.length >= 2) {
+             var gameName = msg[0].trim();
+             var username = msg[1].trim();
+             if (gameName == this.name) {
+                 if (username.length > 0) {
+                     this.addPlayer(number, username);
+                 }
+                 else {
+                     // username was 0 characters?
+                     console.log("Username was 0 character");
+                 }
+             }
+         }
+         else {
+             // wasn't the right format
+             console.log("message had the wrong format");
+         }
+
+     }
+
+     parseResponse(message, phoneNumber) {
+
+         if (this.isValidNumber(phoneNumber) == 1) {
+             if (message.length > 140) {
+                 message = message.substr(0, 140);
+             }
+
+             this.answers.push(message);
+         }
+
+     }
+
+	parseJudging(message, phoneNumber) {
+		// checks that phoneNumber is the judge
+		if (this.isValidNumber(phoneNumber) == 2) {
+			// changes choice into an int, makes sure its valid
+			var choice = parseInt(message)
+			if (!isNaN(choice)) {
+				if (choice < this.players.length) {
+					this.players[choice].score += 10;
+				}
+				else {
+					// not a valid player choice
+				}
+			}
+			else {
+				// not even a number bro
+			}
+		}
+		else {
+			// not a valid phone number so ignore that hoe
+		}
+	}
+
+	parseJudgeStart(message, phoneNumber) {
+		if (this.isValidNumber(phoneNumber) == 2) {
+			if (message.length > 140) {
+				//todo send message to judge, need another question
+			}
+			else {
+				this.question = message;
+				//todo advance state
+			}
+		}
+	}
+    
  } //end of game object
 
  /*
