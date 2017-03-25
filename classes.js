@@ -1,5 +1,5 @@
 // Constants
-const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2;
+const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140;
 
 // Game object
 class Game {
@@ -158,8 +158,8 @@ class Game {
              if (!(this.checkForInAnswers(cur_answer))) {
 
                  //cuts answer down if larger than 140 chars
-                 if (message.length > 140) {
-                     message = message.substr(0, 140);
+                 if (message.length > MAX_MESSAGE_LENGTH) {
+                     message = message.substr(0, MAX_MESSAGE_LENGTH);
                  }
 
                  //pushes to the answers array
@@ -200,8 +200,8 @@ class Game {
 	}
 
 	parseJudgeStart(message, phoneNumber) {
-		if (this.isValidNumber(phoneNumber) == 2) {
-			if (message.length > 140) {				
+		if (this.isValidNumber(phoneNumber) == JUDGE) {
+			if (message.length > MAX_MESSAGE_LENGTH) {				
 				this.sendText(phoneNumber, 'Error: response too long. Please send another message < 140 characters');
 				console.log("message too long");
 			}
@@ -213,7 +213,7 @@ class Game {
 			}
 		}
 		else {
-			if (this.isValidNumber(phoneNumber) == 0) {
+			if (this.isValidNumber(phoneNumber) == NOT_PLAYER) {
 				this.sendText(phoneNumber, 'You are not in this game...')
 			}
 			else {
