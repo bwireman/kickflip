@@ -137,7 +137,7 @@ class Game {
      }
 
      startGame() {
-         // TODO: shuffleArray(this.players);
+         shuffleArray(this.players);
          this.judgeIndex = 0;
          var judgeName = this.players[this.judgeIndex].name;
          var playerMsg = `The game is starting! ${judgeName} is the first judge.\n\n
