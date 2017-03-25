@@ -67,10 +67,6 @@ class Game {
 		  //todo parse judging
          }
      }
-<<<<<<< HEAD
-	 
-	 
-=======
 
      // Parsing input functions
      parseJoinInput(msg, number) {
@@ -118,7 +114,6 @@ class Game {
 
      }
 
->>>>>>> 037024636075dab51ae1b5cb43a74dfc684db8fb
 	parseJudging(message, phoneNumber) {
 		// checks that phoneNumber is the judge
 		if (this.isValidNumber(phoneNumber) == 2) {
@@ -140,7 +135,7 @@ class Game {
 			// not a valid phone number so ignore that hoe
 		}
 	}
-	
+
 	parseJudgeStart(message, phoneNumber) {
 		if (this.isValidNumber(phoneNumber) == 2) {
 			if (message.length > 140) {
@@ -150,8 +145,9 @@ class Game {
 				this.question = message;
 				//todo advance state
 			}
-		}	
+		}
 	}
+    
  } //end of game object
 
  /*
