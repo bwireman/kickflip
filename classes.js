@@ -1,5 +1,5 @@
 // Constants
-const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_TIME = 15;
+const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_TIME = 180;
 
 // Game object
 class Game {
