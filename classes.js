@@ -57,7 +57,8 @@ class Game {
          if (this.state == "join") {
              this.parseJoinInput(message, phoneNumber);
          }
-         else if (this.state == "judgestart") {
+         else if (this.state == "judgeStart") {
+			 console.log('calling parse judgeStart');
 		     this.parseJudgeStart(message, phoneNumber);
          }
          else if (this.state == "playerResponses") {
@@ -140,11 +141,16 @@ class Game {
 		if (this.isValidNumber(phoneNumber) == 2) {
 			if (message.length > 140) {
 				//todo send message to judge, need another question
+				console.log("message too long")
 			}
 			else {
 				this.question = message;
+				console.log("question recieved, advance to state player response")
 				//todo advance state
 			}
+		}
+		else {
+			console.log("not judge, please wait for question")
 		}
 	}
  } //end of game object
