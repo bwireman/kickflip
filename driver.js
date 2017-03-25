@@ -16,9 +16,12 @@ class Driver {
 	onReceiveText(body) {
 		var command = this.getCommand(body.Body);
 
-		if (command == CREATE_COMMAND) {
+		if (command == CREATE_COMMAND && !this.game) {
 			onReceiveCreate(body);
 		}
+        else {
+            this.game.onInput(body.Body, body.From);
+        }
 	}
 
 	onReceiveCreate(body) {
@@ -65,7 +68,6 @@ const twilio = require('twilio');
 const client = new twilio.RestClient(twilioSid, twilioToken);
 
 function sendText(phoneNumber, msg) {
-    console.log('sending text...');
     client.messages.create({
         body: msg,
         to: phoneNumber,
