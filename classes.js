@@ -4,7 +4,7 @@ const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2;
 // Game object
 class Game {
 
-     constructor(gameName, phoneNumber, username, driverEmitter = {}) {
+     constructor(gameName, phoneNumber, username, driverEmitter = {}, debugMode = true) {
          this.name = gameName;
          this.creatorPhoneNumber = phoneNumber;
 
@@ -15,12 +15,15 @@ class Game {
          this.answers = [];
 		 this.question = '';
          this.driverEmitter = driverEmitter;
+         this.debugMode = debugMode;
          this.addPlayer(phoneNumber, username);
      }
 
      addPlayer(phoneNumber, username) {
          if (this.isValidNumber(phoneNumber) == NOT_PLAYER) {
              this.players.push(new Player(phoneNumber, username));
+             this.sendText(phoneNumber,
+             "Welcome to " + this.name + ", " + username + "!");
          }
          // todo already added message? maybe??!???!?!?!
      }
@@ -29,12 +32,22 @@ class Game {
      // sendText(phoneNumber array, msg);
      sendText(numbers, msg) {
          if (typeof(numbers) == "string") {
-             this.driverEmitter.emit('sendText', numbers, msg);
+             //this.driverEmitter.emit('sendText', numbers, msg);
+             this.sendTextWithDebug(numbers, msg);
          }
          else {
              for (var i = 0; i < numbers.length; ++i) {
-                 this.driverEmitter.emit('sendText', numbers[i], msg);
+                //  this.driverEmitter.emit('sendText', numbers[i], msg);
+                this.sendTextWithDebug(numbers[i], msg);
              }
+         }
+     }
+     sendTextWithDebug(number, msg) {
+         if (this.debugMode) {
+             console.log("To: " + number + "\nMessage: " + msg + "\n---");
+         }
+         else {
+             this.driverEmitter.emit('sendText', number, msg);
          }
      }
 
@@ -224,5 +237,5 @@ class Answer {
     }
 }
 
-// Exports 
+// Exports
 module.exports.Game = Game;
