@@ -1,6 +1,8 @@
 const Classes = require('./classes.js');
 const EventEmitter = require('events');
+const fs = require('fs');
 
+const TWILIO_FILENAME = 'twilioData.json';
 const CREATE_COMMAND = 'create';
 
 class DriverEmitter extends EventEmitter {}
@@ -68,10 +70,14 @@ class Driver {
 
 }
 
+// Hide our keys from public repo
+twilioInfo = fs.readFileSync(TWILIO_FILENAME, {encoding: 'UTF-8'});
+twilioInfo = JSON.parse(twilioInfo);
+
 // Twilio stuff
-const twilioSid = 'AC4f40f7f29e539edbb5e7d1e3c9e66ddd';
-const twilioToken = '88e8ec36215e9645adccd41d54c8bbd3';
-const twilioNumber = '+17344186484';
+const twilioSid = twilioInfo.sid;
+const twilioToken = twilioInfo.token;
+const twilioNumber = twilioInfo.number;
 const twilio = require('twilio');
 const client = new twilio.RestClient(twilioSid, twilioToken);
 
@@ -88,3 +94,4 @@ function sendText(phoneNumber, msg) {
 }
 
 module.exports.Driver = Driver;
+module.exports.twilioInfo = twilioInfo;

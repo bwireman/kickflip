@@ -10,8 +10,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 var driver = new Driver.Driver();
 
 // Not sure what are these Twilio tokens for yet, just leave them here
-const twilioSid = 'AC4f40f7f29e539edbb5e7d1e3c9e66ddd';
-const twilioToken = '88e8ec36215e9645adccd41d54c8bbd3';
+const twilioSid = Driver.twilioInfo.sid;
+const twilioToken = Driver.twilioInfo.token;
 
 // The index
 app.get('/', function (req, res) {
