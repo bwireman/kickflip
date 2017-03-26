@@ -112,24 +112,39 @@ class Game {
                  this.startGame();
                  return;
              }
+             else {
+                 var invite = 'invite'
+                 msg = msg.trim().toLowerCase();
+                 if (msg.substr(0, invite.length)) {
+                     msg = msg.substr(invite.length);
+                     var inputNumbers = msg.split(',');
+                     var tmpPhoneNumbers = [];
+                     // Get all of the valid phone numbers from invite command
+                     for (var i = 0; i < inputNumbers.length; ++i) {
+                        //  inputNumbers[i] = inputNumbers[i].trim();
+                        var fixedInput = '';
+                        for (var j = 0; j < inputNumbers[i].length; ++j) {
+                            if (inputNumbers[i][j] >= '0' && inputNumbers[i][j] <= '9') {
+                                fixedInput += inputNumbers[i][j];
+                            }
+                        }
+                        if (fixedInput.length == 10) {
+                            fixedInput = '+1' + fixedInput;
+                            tmpPhoneNumbers.push(fixedInput);
+                        }
+                        else if (fixedInput.length == 11 && fixedInput[0] == '1') {
+                            fixedInput = '+' + fixedInput;
+                            tmpPhoneNumbers.push(fixedInput);
+                        }
+                     }
+                     // Send invites
+                     for (var i = 0; i < tmpPhoneNumbers.length; ++i) {
+                         this.sendText(tmpPhoneNumbers[i], "You've been invited to a game of Kickflip! If you want to join, reply \"" + this.name + ", yourName\"");
+                     }
+                     return;
+                 }
+             }
          }
-		 
-		 // check for invites
-		 if (number == this.creatorPhoneNumber) {
-			msg = msg.trim(); // 2487897243,1234567890,
-			var inviteNumbers = [];
-			var numberDigits = 0;
-			while (msg.length > 9) {				
-				var tempNumber = "+1" + msg.substr(0, 10);
-				inviteNumbers.push(tempNumber);	
-				msg = msg.slice(11, msg.length);
-				msg = msg.trim();
-			}
-			for (var i = 0; i < inviteNumbers.length; ++i) {
-				this.sendText(inviteNumbers[i], "You've been invited to the game! If you want to join, send back \"" + this.name + "\", \"yourname\" without quotes.");
-			}
-			return;
-		 }		 
 
          // game_name, user_name
          msg = msg.split(",");
