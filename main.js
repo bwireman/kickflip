@@ -15,7 +15,8 @@ const twilioToken = '88e8ec36215e9645adccd41d54c8bbd3';
 
 // The index
 app.get('/', function (req, res) {
-	res.send('This is the server for Kickflip');
+	//res.send('This is the server for Kickflip');
+	res.redirect('https://github.com/dudasaus/kickflip');
 })
 
 app.get('/logo', function(req, res) {
