@@ -58,6 +58,10 @@ for (var i = 0; i < game.players.length; ++i) {
     game.onInput('1', judgePhoneNumber);
 }
 
+// stop inactiveTimer
+if (game.inactiveTimer) {
+    clearTimeout(game.inactiveTimer);
+}
 
 setTimeout(function() {
     game.pgDriver.client.end();

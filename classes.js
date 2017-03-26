@@ -19,8 +19,9 @@ class Game {
          this.driverEmitter = driverEmitter;
          this.debugMode = debugMode;
          this.responseTimer = {};
-         this.inactiveTimer = {};
+         this.inactiveTimer = null;
          this.addPlayer(phoneNumber, username);
+         this.pingInactiveTimer();
 
          //db driver
          this.pgDriver = new PgDriver(function() {});
@@ -35,6 +36,8 @@ class Game {
                  this.sendText(phoneNumber,
                  "Welcome to " + this.name + ", " + username + "!");
                  this.sendText(this.creatorPhoneNumber,username + " joined the game!");
+                 // Ping inactive timer
+                 this.pingInactiveTimer();
              }
 
 
@@ -131,6 +134,8 @@ class Game {
 					// enter player response stage
 					// shuffle players, set judge index to 0
 					this.startGame();
+                    // Ping inactive timer
+                    this.pingInactiveTimer();
 				 }
                  return;
              }
@@ -212,6 +217,8 @@ class Game {
             }
         }
         this.state = 'judgeStart';
+        // Ping inactive timer
+        this.pingInactiveTimer();
      }
 
      roundStart() {
@@ -257,6 +264,8 @@ class Game {
 
 
          this.state = "judging";
+         // Ping inactive timer
+         this.pingInactiveTimer();
      }
 
     //checks if a , in an answer object has already submitted an answer
@@ -343,6 +352,8 @@ class Game {
                     }
 					this.roundEnd();
 					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
+                    // Ping inactive timer
+                    this.pingInactiveTimer();
 				}
 				else {
 					this.sendText(phoneNumber, 'Please send a valid choice')
@@ -372,7 +383,7 @@ class Game {
                     var self = this;
 			        this.pgDriver.getRandomQuestion(function(question) {
                         self.question = question;
-                        self.sendText(phoneNumber, 'You sent: ' + question + '\n Now waiting for player responses');
+                        self.sendText(phoneNumber, 'You sent: ' + question + '\nNow waiting for player responses');
                         self.judgeStartToPlayerResponse(); //advance state
 
                     });
@@ -457,13 +468,18 @@ class Game {
 		for (var i = 0; i < this.players.length; ++i) {
 			this.sendText(this.players[i].phoneNumber, gameScoreboard);
 		}
-		//todo send event emitter to driver function and clear memory and shiz
+		// Clear timer, kill game 
+        if (this.inactiveTimer) {
+            clearTimeout(this.inactiveTimer);
+        }
         this.driverEmitter.emit('gameOver');
 	}
 
     /*** INACTIVE TIMER STUFF ***/
     pingInactiveTimer() {
-        clearTimeout(this.inactiveTimer);
+        if (this.inactiveTimer) {
+            clearTimeout(this.inactiveTimer);
+        }
         this.inactiveTimer = setTimeout(this.inactiveExit, INACTIVE_TIME * 1000);
     }
 
