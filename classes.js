@@ -417,7 +417,7 @@ class Game {
 				winnerName = this.players[i].name
 			} else if (max == this.players[i].score) {
 			    tie = true;
-			    winnerName += this.players[i].name + " ";
+			    winnerName += " " + this.players[i].name;
 			}
 
 		}
@@ -432,7 +432,7 @@ class Game {
 		    gameScoreboard += 'The winner is ' + winnerName + ' with ' + max + " points!\n"
 		    gameScoreboard += winnerName + " is the Kickflip king!"
 		} else {
-		    gameScoreboard += 'The winners are ' + winnerName + ' with ' + max + " points!\n"
+		    gameScoreboard += 'The winners are' + winnerName + ' with ' + max + " points each!\n"
 		}
 
 		
