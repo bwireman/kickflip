@@ -11,6 +11,7 @@ class Driver {
         this.driverEmitter = new DriverEmitter;
 
         this.driverEmitter.on('sendText', sendText);
+        this.driverEmitter.on('gameOver', this.killGame);
 	}
 
 	onReceiveText(body) {
@@ -36,7 +37,7 @@ class Driver {
 
 		var args = this.getArgs(text, CREATE_COMMAND);
 
-		this.game = new Classes.Game(args[0], senderNumber, args[1], false);
+		this.game = new Classes.Game(args[0], senderNumber, args[1], this.driverEmitter, false);
 		this.game.sendText(senderNumber, "Welcome to Kickflip, " + args[1] + " , Game: " + args[0] + " has been created!\n\n Have Fun!\n\n" +
 						   "Invite your friends by texting \"invite ...\" follwed by their phone numbers separated by commas, or tell them to text \" "+ args[0] + ", theirName\" to  " +
 						   twilioNumber + ". Text \"start\" to begin your game!");
@@ -60,7 +61,9 @@ class Driver {
 		return args;
 	}
 
-
+    killGame() {
+        this.game = null;
+    }
 }
 
 // Twilio stuff
