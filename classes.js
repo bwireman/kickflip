@@ -23,9 +23,15 @@ class Game {
      addPlayer(phoneNumber, username) {
          if (this.isValidNumber(phoneNumber) == NOT_PLAYER) {
              this.players.push(new Player(phoneNumber, username));
-             this.sendText(phoneNumber,
-             "Welcome to " + this.name + ", " + username + "!");
-             this.sendText(this.creatorPhoneNumber,username + "has joined the game");
+             
+             if(phoneNumber != this.creatorPhoneNumber)
+             {
+                 this.sendText(phoneNumber,
+                 "Welcome to " + this.name + ", " + username + "!");
+                 this.sendText(this.creatorPhoneNumber,username + " joined the game!");
+             }
+
+
 
          }
          // todo already added message? maybe??!???!?!?!
