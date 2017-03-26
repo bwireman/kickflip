@@ -423,13 +423,16 @@ class Game {
 	    var tie = false;
 		var max = 0;
 		var winnerName;
+		var winnersNameTie; //trust me we need this
 		for (var i = 0; i < this.players.length; ++i) {
 			if (this.players[i].score > max) {
 				max = this.players[i].score
 				winnerName = this.players[i].name
+				winnersNameTie = "";
+				tie = false;
 			} else if (max == this.players[i].score) {
 			    tie = true;
-			    winnerName += " " + this.players[i].name;
+			    winnersNameTie += this.players[i].name + " ";
 			}
 
 		}
@@ -444,7 +447,7 @@ class Game {
 		    gameScoreboard += 'The winner is ' + winnerName + ' with ' + max + " points!\n"
 		    gameScoreboard += winnerName + " is the Kickflip king!"
 		} else {
-		    gameScoreboard += 'The winners are' + winnerName + ' with ' + max + " points each!\n"
+		    gameScoreboard += 'The winners are ' + winnersNameTie + ' with ' + max + " points each!\n"
 		}
 
 
