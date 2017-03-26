@@ -409,6 +409,7 @@ class Game {
 			this.sendText(this.players[i].phoneNumber, gameScoreboard);
 		}
 		//todo send event emitter to driver function and clear memory and shiz
+        this.driverEmitter.emit('gameOver');
 	}
  } //end of game object
 
