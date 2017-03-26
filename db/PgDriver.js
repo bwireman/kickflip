@@ -28,6 +28,25 @@ class PgDriver {
 			callback(err, result);
 		});
 	}
+
+	getRandomQuestion(callback) {
+		var self = this;
+
+		this.client.query('select count(*) from questions;',
+					[], function(err, result) {
+			var count = result.rows[0].count;
+			var random = Math.floor(Math.random() * count + 1);
+
+			self.client.query('select question from questions where id=$1',
+					[random], function(err, result) {
+				if (err) {
+					return console.error(err);
+				}
+
+				callback(result.rows[0].question);
+			})
+		});
+	}
 }
 
 module.exports = PgDriver;
