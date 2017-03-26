@@ -1,7 +1,7 @@
 const PgDriver = require('./db/PgDriver.js');
 
 // Constants
-const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_TIME = 180;
+const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_TIME = 180, INACTIVE_TIME = 60 * 15;
 
 // Game object
 class Game {
@@ -18,8 +18,10 @@ class Game {
 		 this.question = '';
          this.driverEmitter = driverEmitter;
          this.debugMode = debugMode;
-         this.timer = {};
+         this.responseTimer = {};
+         this.inactiveTimer = null;
          this.addPlayer(phoneNumber, username);
+         this.pingInactiveTimer();
 
          //db driver
          this.pgDriver = new PgDriver(function() {});
@@ -34,6 +36,8 @@ class Game {
                  this.sendText(phoneNumber,
                  "Welcome to " + this.name + ", " + username + "!");
                  this.sendText(this.creatorPhoneNumber,username + " joined the game!");
+                 // Ping inactive timer
+                 this.pingInactiveTimer();
              }
 
 
@@ -45,7 +49,6 @@ class Game {
      // sendText(phoneNumber, msg);
      // sendText(phoneNumber array, msg);
      sendText(numbers, msg) {
-		 console.log(typeof(numbers));
          if (typeof(numbers) == "string") {
              this.sendTextWithDebug(numbers, msg);
          }
@@ -96,12 +99,15 @@ class Game {
      }
 
      onInput(message, phoneNumber) {
+         if (phoneNumber == this.creatorPhoneNumber && message.trim().toLowerCase() == '$exit') {
+             this.creatorForcedExit();
+         }
          // direct program based on its current state
-         if (this.state == "join") {
+         else if (this.state == "join") {
              this.parseJoinInput(message, phoneNumber);
          }
          else if (this.getPlayer(phoneNumber) == -1) {
-             this.sendText(phoneNumber, "You are not part of the active game \n\n #cock_blocked");
+             this.sendText(phoneNumber, "You are not part of the active game");
          }
          else if (this.state == "judgeStart") {
 			 console.log('calling parse judgeStart');
@@ -130,6 +136,8 @@ class Game {
 					// enter player response stage
 					// shuffle players, set judge index to 0
 					this.startGame();
+                    // Ping inactive timer
+                    this.pingInactiveTimer();
 				 }
                  return;
              }
@@ -178,7 +186,7 @@ class Game {
                  }
                  else {
                      // username was 0 characters?
-                     console.log("Username was 0 character");
+                     console.log("Username was 0 characters");
                      this.sendText(number, "You didn\'t enter a username!\nRespond with \""+ this.name +", USERNAME\"");
                  }
              }
@@ -211,6 +219,8 @@ class Game {
             }
         }
         this.state = 'judgeStart';
+        // Ping inactive timer
+        this.pingInactiveTimer();
      }
 
      roundStart() {
@@ -235,7 +245,7 @@ class Game {
 
      playerResponseToJudging() {
          shuffleArray(this.answers);
-         clearTimeout(this.timer);
+         clearTimeout(this.responseTimer);
 
          var all_answers = '';
 
@@ -256,6 +266,8 @@ class Game {
 
 
          this.state = "judging";
+         // Ping inactive timer
+         this.pingInactiveTimer();
      }
 
     //checks if a , in an answer object has already submitted an answer
@@ -342,6 +354,8 @@ class Game {
                     }
 					this.roundEnd();
 					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
+                    // Ping inactive timer
+                    this.pingInactiveTimer();
 				}
 				else {
 					this.sendText(phoneNumber, 'Please send a valid choice')
@@ -371,7 +385,7 @@ class Game {
                     var self = this;
 			        this.pgDriver.getRandomQuestion(function(question) {
                         self.question = question;
-                        self.sendText(phoneNumber, 'You sent: ' + question + '\n Now waiting for player responses');
+                        self.sendText(phoneNumber, 'You sent: ' + question + '\nNow waiting for player responses');
                         self.judgeStartToPlayerResponse(); //advance state
 
                     });
@@ -403,7 +417,7 @@ class Game {
 			}
 		}
 		//todo start timer
-        this.timer = setTimeout( () => {
+        this.responseTimer = setTimeout( () => {
             this.playerResponseToJudging();
         }, RESPONSE_TIME * 1000);
 	}
@@ -456,9 +470,52 @@ class Game {
 		for (var i = 0; i < this.players.length; ++i) {
 			this.sendText(this.players[i].phoneNumber, gameScoreboard);
 		}
-		//todo send event emitter to driver function and clear memory and shiz
+		// Clear timer, kill game
+        if (this.inactiveTimer) {
+            clearTimeout(this.inactiveTimer);
+        }
         this.driverEmitter.emit('gameOver');
 	}
+
+    /*** INACTIVE TIMER STUFF ***/
+    pingInactiveTimer(t = INACTIVE_TIME) {
+        if (this.inactiveTimer) {
+            clearTimeout(this.inactiveTimer);
+        }
+        var that = this;
+        this.inactiveTimer = setTimeout( () => {
+            that.inactiveExit();
+        }, t * 1000);
+    }
+
+    inactiveExit() {
+        if (this.players) {
+            for (var i = 0; i < this.players.length; ++i) {
+                this.sendText(this.players[i].phoneNumber, "The current game of Kickflip has ended due to inactivity.");
+            }
+        }
+        console.log("Quitting game due to inactivity.");
+        console.log(this);
+        this.driverEmitter.emit('gameOver');
+    }
+
+    checkInactiveTimer() {
+        console.log(this.inactiveTimer);
+    }
+
+    // Creator forced exit
+    creatorForcedExit() {
+        if (this.players) {
+            for (var i = 0; i < this.players.length; ++i) {
+                this.sendText(this.players[i].phoneNumber, "The current game of Kickflip has been closed by the game creator.");
+            }
+        }
+        if (this.inactiveTimer) {
+            clearTimeout(this.inactiveTimer);
+        }
+        this.driverEmitter.emit('gameOver');
+    }
+
  } //end of game object
 
 
