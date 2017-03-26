@@ -170,9 +170,9 @@ class Game {
          // game_name, user_name
          msg = msg.split(",");
          if (msg.length >= 2) {
-             var gameName = msg[0].trim();
+             var gameName = msg[0].trim().toLowerCase();
              var username = msg[1].trim();
-             if (gameName == this.name) {
+             if (gameName == this.name.toLowerCase()) {
                  if (username.length > 0) {
                      this.addPlayer(number, username);
                  }
@@ -371,8 +371,9 @@ class Game {
                     var self = this;
 			        this.pgDriver.getRandomQuestion(function(question) {
                         self.question = question;
-                        self.sendText(phoneNumber, 'Question received, now wait for player responses');
-                        self.judgeStartToPlayerResponse(); //advance state
+                        this.sendText(phoneNumber, 'You sent: ' + question + '\n Now waiting for player responses');
+                        this.judgeStartToPlayerResponse(); //advance state
+
                     });
 			        console.log("asked for a random question, advance to state player response")
 			    } else {
