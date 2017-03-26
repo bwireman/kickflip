@@ -200,7 +200,7 @@ class Game {
 			 playerList += '\n'
 		 }
          var playerMsg = "The game is starting! The players are\n" + playerList + `${judgeName} is the first judge.\n\nWaiting for ${judgeName} to ask a question.`;
-         var judgeMsg = "The game is starting! The players are\n" + playerList + "You are the first judge. \n\nRespond with a question for the players.";
+         var judgeMsg = "The game is starting! The players are\n" + playerList + "You are the first judge. \n\nRespond with a question for the players, or send idk for a random question.";
 
         for (var i = 0; i < this.players.length; i++) {
             if (i == this.judgeIndex) {
@@ -217,7 +217,7 @@ class Game {
          this.state = 'judgeStart';
          var judgeName = this.players[this.judgeIndex].name;
          var playerMsg = `The next round is starting! ${judgeName} is the judge.\n\nWaiting for ${judgeName} to ask a question.`;
-         var judgeMsg = `The next round is starting! You are the judge. \n\nRespond with a question for the players.`;
+         var judgeMsg = `The next round is starting! You are the judge. \n\nRespond with a question for the players, or send idk for a random question.`;
 
         for (var i = 0; i < this.players.length; i++) {
 			if (this.judgeIndex == 0) {
@@ -325,7 +325,7 @@ class Game {
                         var newJudgeName = this.players[this.judgeIndex].name;
                         var playerMsg = `The judge selected "${this.answers[choice - 1].text}" and gave them 10 points\n\nThe next round is starting! ${newJudgeName} is the judge.\n\nWaiting for ${newJudgeName} to ask a question.`;
                         var prevJudgeMsg = `You selected "${this.answers[choice - 1].text}" and gave them 10 points\n\nThe next round is starting! ${newJudgeName} is the judge.\n\nWaiting for ${newJudgeName} to ask a question.`;
-                        var newJudgeMsg = `The judge selected "${this.answers[choice - 1].text}" and gave them 10 points\n\nThe next round is starting! You are the judge.\n\nRespond with a question for the players.`;
+                        var newJudgeMsg = `The judge selected "${this.answers[choice - 1].text}" and gave them 10 points\n\nThe next round is starting! You are the judge.\n\nRespond with a question for the players, or send idk for a random question`;
                     }
                     for (var i = 0; i < this.players.length; ++i) {
                         var newMsg;
