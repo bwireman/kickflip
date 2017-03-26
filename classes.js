@@ -1,3 +1,5 @@
+const PgDriver = require('./db/PgDriver.js');
+
 // Constants
 const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_TIME = 180;
 
@@ -18,12 +20,15 @@ class Game {
          this.debugMode = debugMode;
          this.timer = {};
          this.addPlayer(phoneNumber, username);
+
+         //db driver
+         this.pgDriver = PgDriver(function() {});
      }
 
      addPlayer(phoneNumber, username) {
          if (this.isValidNumber(phoneNumber) == NOT_PLAYER) {
              this.players.push(new Player(phoneNumber, username));
-             
+
              if(phoneNumber != this.creatorPhoneNumber)
              {
                  this.sendText(phoneNumber,
@@ -360,15 +365,19 @@ class Game {
 			else {
 
 			    if(message.trim().toLowerCase() == "idk") {
-			        //todo get random question
+                    var self = this;
+			        this.pgDriver.getRandomQuestion(function(question) {
+                        self.question = question;
+                        this.sendText(phoneNumber, 'Question received, now wait for player responses');
+                        this.judgeStartToPlayerResponse(); //advance state
+                    });
 			        console.log("asked for a random question, advance to state player response")
 			    } else {
 			        this.question = message;
 			        console.log("question received, advance to state player response")
-			    }
-
-			    this.sendText(phoneNumber, 'Question received, now wait for player responses');
-			    this.judgeStartToPlayerResponse(); //advance state
+    			    this.sendText(phoneNumber, 'Question received, now wait for player responses');
+    			    this.judgeStartToPlayerResponse(); //advance state
+                }
 			}
 		}
 		else {
@@ -435,7 +444,7 @@ class Game {
 		    gameScoreboard += 'The winners are' + winnerName + ' with ' + max + " points each!\n"
 		}
 
-		
+
 
 		for (var i = 0; i < this.players.length; ++i) {
 			this.sendText(this.players[i].phoneNumber, gameScoreboard);
