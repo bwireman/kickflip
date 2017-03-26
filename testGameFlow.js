@@ -58,4 +58,8 @@ for (var i = 0; i < game.players.length; ++i) {
     game.onInput('1', judgePhoneNumber);
 }
 
+
+setTimeout(function() {
+    game.pgDriver.client.end();
+}, 2000);
 console.log(game);

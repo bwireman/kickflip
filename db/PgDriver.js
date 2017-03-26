@@ -32,9 +32,9 @@ class PgDriver {
 	getRandomQuestion(callback) {
 		var self = this;
 
-		this.client.query('select count(*) from questions;',
+		this.client.query('select id from questions order by id desc limit 1;',
 					[], function(err, result) {
-			var count = result.rows[0].count;
+			var count = result.rows[0].id;
 			var random = Math.floor(Math.random() * count + 1);
 
 			self.client.query('select question from questions where id=$1',
