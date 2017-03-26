@@ -18,7 +18,7 @@ class Game {
 		 this.question = '';
          this.driverEmitter = driverEmitter;
          this.debugMode = debugMode;
-         this.timer = {};
+         this.responseTimer = {};
          this.addPlayer(phoneNumber, username);
 
          //db driver
@@ -235,7 +235,7 @@ class Game {
 
      playerResponseToJudging() {
          shuffleArray(this.answers);
-         clearTimeout(this.timer);
+         clearTimeout(this.responseTimer);
 
          var all_answers = '';
 
@@ -403,7 +403,7 @@ class Game {
 			}
 		}
 		//todo start timer
-        this.timer = setTimeout( () => {
+        this.responseTimer = setTimeout( () => {
             this.playerResponseToJudging();
         }, RESPONSE_TIME * 1000);
 	}
