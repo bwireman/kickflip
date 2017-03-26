@@ -23,9 +23,15 @@ class Game {
      addPlayer(phoneNumber, username) {
          if (this.isValidNumber(phoneNumber) == NOT_PLAYER) {
              this.players.push(new Player(phoneNumber, username));
-             this.sendText(phoneNumber,
-             "Welcome to " + this.name + ", " + username + "!");
-             this.sendText(this.creatorPhoneNumber,username + "has joined the game");
+             
+             if(phoneNumber != this.creatorPhoneNumber)
+             {
+                 this.sendText(phoneNumber,
+                 "Welcome to " + this.name + ", " + username + "!");
+                 this.sendText(this.creatorPhoneNumber,username + " joined the game!");
+             }
+
+
 
          }
          // todo already added message? maybe??!???!?!?!
@@ -411,7 +417,7 @@ class Game {
 				winnerName = this.players[i].name
 			} else if (max == this.players[i].score) {
 			    tie = true;
-			    winnerName += this.players[i].name + " ";
+			    winnerName += " " + this.players[i].name;
 			}
 
 		}
@@ -426,7 +432,7 @@ class Game {
 		    gameScoreboard += 'The winner is ' + winnerName + ' with ' + max + " points!\n"
 		    gameScoreboard += winnerName + " is the Kickflip king!"
 		} else {
-		    gameScoreboard += 'The winners are ' + winnerName + ' with ' + max + " points!\n"
+		    gameScoreboard += 'The winners are' + winnerName + ' with ' + max + " points each!\n"
 		}
 
 		
