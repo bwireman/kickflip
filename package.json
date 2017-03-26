@@ -10,6 +10,7 @@
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
+    "pg": "^6.1.5",
     "twilio": "^2.11.1"
   }
 }
