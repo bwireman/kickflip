@@ -49,7 +49,6 @@ class Game {
      // sendText(phoneNumber, msg);
      // sendText(phoneNumber array, msg);
      sendText(numbers, msg) {
-		 console.log(typeof(numbers));
          if (typeof(numbers) == "string") {
              this.sendTextWithDebug(numbers, msg);
          }
@@ -468,7 +467,7 @@ class Game {
 		for (var i = 0; i < this.players.length; ++i) {
 			this.sendText(this.players[i].phoneNumber, gameScoreboard);
 		}
-		// Clear timer, kill game 
+		// Clear timer, kill game
         if (this.inactiveTimer) {
             clearTimeout(this.inactiveTimer);
         }
@@ -476,20 +475,30 @@ class Game {
 	}
 
     /*** INACTIVE TIMER STUFF ***/
-    pingInactiveTimer() {
+    pingInactiveTimer(t = INACTIVE_TIME) {
         if (this.inactiveTimer) {
             clearTimeout(this.inactiveTimer);
         }
-        this.inactiveTimer = setTimeout(this.inactiveExit, INACTIVE_TIME * 1000);
+        var that = this;
+        this.inactiveTimer = setTimeout( () => {
+            that.inactiveExit();
+        }, t * 1000);
     }
 
     inactiveExit() {
-        for (var i = 0; i < this.players.length; ++i) {
-            this.sendText(this.players[i].phoneNumber, "The current game of kickflip has ended due to inactivity.");
+        if (this.players) {
+            for (var i = 0; i < this.players.length; ++i) {
+                this.sendText(this.players[i].phoneNumber, "The current game of Kickflip has ended due to inactivity.");
+            }
         }
+        console.log("Quitting game due to inactivity.");
+        console.log(this);
         this.driverEmitter.emit('gameOver');
     }
 
+    checkInactiveTimer() {
+        console.log(this.inactiveTimer);
+    }
 
  } //end of game object
 
