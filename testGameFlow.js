@@ -53,6 +53,7 @@ for (var i = 0; i < game.players.length; ++i) {
     game.onInput('-1', judgePhoneNumber);
     game.onInput('abc', judgePhoneNumber);
     game.onInput('1', invalidPhoneNumber);
+    game.onInput('1', 123456789);
     // valid choice
     game.onInput('1', judgePhoneNumber);
 }

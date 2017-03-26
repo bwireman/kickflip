@@ -22,6 +22,9 @@ class Driver {
 		if (command == CREATE_COMMAND && !this.game) {
 			this.onReceiveCreate(body);
 		}
+		else if (!this.game) {
+		    sendText(body.From, "No game running, to create a game send CREATE gamename, yourname");
+		}
         else {
             this.game.onInput(body.Body, body.From);
         }

@@ -22,7 +22,7 @@ class Game {
          this.addPlayer(phoneNumber, username);
 
          //db driver
-         this.pgDriver = PgDriver(function() {});
+         this.pgDriver = new PgDriver(function() {});
      }
 
      addPlayer(phoneNumber, username) {
@@ -99,6 +99,9 @@ class Game {
          // direct program based on its current state
          if (this.state == "join") {
              this.parseJoinInput(message, phoneNumber);
+         }
+         else if (this.getPlayer(phoneNumber) == -1) {
+             this.sendText(phoneNumber, "You are not part of the active game \n\n #cock_blocked");
          }
          else if (this.state == "judgeStart") {
 			 console.log('calling parse judgeStart');
