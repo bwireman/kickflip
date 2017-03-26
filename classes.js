@@ -373,6 +373,7 @@ class Game {
                         self.question = question;
                         this.sendText(phoneNumber, 'You sent: ' + question + '\n Now waiting for player responses');
                         this.judgeStartToPlayerResponse(); //advance state
+
                     });
 			        console.log("asked for a random question, advance to state player response")
 			    } else {
