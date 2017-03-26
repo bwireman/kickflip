@@ -226,10 +226,10 @@ class Game {
          //send to all players
          for(var i = 0; i < this.players.length; ++i) {
              if (i != this.judgeIndex) {
-                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers);
+                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers +"\nWaiting for the judge to choose the best answer...");
              }
              else {
-                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers + "\n Respond with a number to choose the best answer!");
+                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers + "\nRespond with a number to choose the best answer!");
              }
          }
 
@@ -270,7 +270,7 @@ class Game {
                      this.playerResponseToJudging();
                  }
              }
-             else//if they've already responded
+             else //if they've already responded
              {
                  this.sendText(phoneNumber, "You've already submitted an answer!");
              }
@@ -341,7 +341,7 @@ class Game {
 	parseJudgeStart(message, phoneNumber) {
 		if (this.isValidNumber(phoneNumber) == JUDGE) {
 			if (message.length > MAX_MESSAGE_LENGTH) {
-				this.sendText(phoneNumber, 'Error: response too long. Please send another message < 140 characters');
+				this.sendText(phoneNumber, 'Error: response too long. Please send another message <= 140 characters');
 				console.log("message too long");
 			}
 			else {
