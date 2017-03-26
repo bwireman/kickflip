@@ -25,6 +25,8 @@ class Game {
              this.players.push(new Player(phoneNumber, username));
              this.sendText(phoneNumber,
              "Welcome to " + this.name + ", " + username + "!");
+             this.sendText(this.creatorPhoneNumber,username + "has joined the game");
+
          }
          // todo already added message? maybe??!???!?!?!
      }
@@ -107,29 +109,49 @@ class Game {
          if (number == this.creatorPhoneNumber) {
              msg = msg.trim().toLowerCase();
              if (msg == 'start') {
-                 // enter player response stage
-                 // shuffle players, set judge index to 0
-                 this.startGame();
+				 if (this.players.length < 3) { //not enough players to start game
+					this.sendText(this.creatorPhoneNumber, "Not enough players to start.\nRequires at least 3 players\nYou have: " + this.players.length + " players");
+				 }
+				 else {
+					// enter player response stage
+					// shuffle players, set judge index to 0
+					this.startGame();
+				 }
                  return;
              }
+             else {
+                 var invite = 'invite'
+                 msg = msg.trim().toLowerCase();
+                 if (msg.substr(0, invite.length)) {
+                     msg = msg.substr(invite.length);
+                     var inputNumbers = msg.split(',');
+                     var tmpPhoneNumbers = [];
+                     // Get all of the valid phone numbers from invite command
+                     for (var i = 0; i < inputNumbers.length; ++i) {
+                        //  inputNumbers[i] = inputNumbers[i].trim();
+                        var fixedInput = '';
+                        for (var j = 0; j < inputNumbers[i].length; ++j) {
+                            if (inputNumbers[i][j] >= '0' && inputNumbers[i][j] <= '9') {
+                                fixedInput += inputNumbers[i][j];
+                            }
+                        }
+                        if (fixedInput.length == 10) {
+                            fixedInput = '+1' + fixedInput;
+                            tmpPhoneNumbers.push(fixedInput);
+                        }
+                        else if (fixedInput.length == 11 && fixedInput[0] == '1') {
+                            fixedInput = '+' + fixedInput;
+                            tmpPhoneNumbers.push(fixedInput);
+                        }
+                     }
+                     // Send invites
+                     for (var i = 0; i < tmpPhoneNumbers.length; ++i) {
+                         this.sendText(tmpPhoneNumbers[i], "You've been invited to a game of Kickflip! If you want to join, reply \"" + this.name + ", yourName\"");
+                     }
+                     return;
+                 }
+             }
          }
-		 
-		 // check for invites
-		 if (number == this.creatorPhoneNumber) {
-			msg = msg.trim(); // 2487897243,1234567890,
-			var inviteNumbers = [];
-			var numberDigits = 0;
-			while (msg.length > 9) {				
-				var tempNumber = "+1" + msg.substr(0, 10);
-				inviteNumbers.push(tempNumber);	
-				msg = msg.slice(11, msg.length);
-				msg = msg.trim();
-			}
-			for (var i = 0; i < inviteNumbers.length; ++i) {
-				this.sendText(inviteNumbers[i], "You've been invited to the game! If you want to join, send back \"" + this.name + "\", \"yourname\" without quotes.");
-			}
-			return;
-		 }		 
 
          // game_name, user_name
          msg = msg.split(",");
@@ -158,8 +180,13 @@ class Game {
          shuffleArray(this.players);
          this.judgeIndex = 0;
          var judgeName = this.players[this.judgeIndex].name;
-         var playerMsg = `The game is starting! ${judgeName} is the first judge.\n\nWaiting for ${judgeName} to ask a question.`;
-         var judgeMsg = `The game is starting! You are the first judge. \n\nRespond with a question for the players.`;
+		 var playerList = '';
+		 for (var i = 0; i < this.players.length; ++i) {
+			 playerList += this.players[i].name;
+			 playerList += '\n'
+		 }
+         var playerMsg = "The game is starting! The players are\n" + playerList + `${judgeName} is the first judge.\n\nWaiting for ${judgeName} to ask a question.`;
+         var judgeMsg = "The game is starting! The players are\n" + playerList + "You are the first judge. \n\nRespond with a question for the players.";
 
         for (var i = 0; i < this.players.length; i++) {
             if (i == this.judgeIndex) {
@@ -206,10 +233,10 @@ class Game {
          //send to all players
          for(var i = 0; i < this.players.length; ++i) {
              if (i != this.judgeIndex) {
-                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers);
+                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers +"\nWaiting for the judge to choose the best answer...");
              }
              else {
-                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers + "\n Respond with a number to choose the best answer!");
+                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers + "\nRespond with a number to choose the best answer!");
              }
          }
 
@@ -250,7 +277,7 @@ class Game {
                      this.playerResponseToJudging();
                  }
              }
-             else//if they've already responded
+             else //if they've already responded
              {
                  this.sendText(phoneNumber, "You've already submitted an answer!");
              }
@@ -321,14 +348,21 @@ class Game {
 	parseJudgeStart(message, phoneNumber) {
 		if (this.isValidNumber(phoneNumber) == JUDGE) {
 			if (message.length > MAX_MESSAGE_LENGTH) {
-				this.sendText(phoneNumber, 'Error: response too long. Please send another message < 140 characters');
+				this.sendText(phoneNumber, 'Error: response too long. Please send another message <= 140 characters');
 				console.log("message too long");
 			}
 			else {
-				this.question = message;
-				console.log("question received, advance to state player response")
-				this.sendText(phoneNumber, 'Question received, now wait for player responses');
-				this.judgeStartToPlayerResponse(); //advance state
+
+			    if(message.trim().toLowerCase() == "idk") {
+			        //todo get random question
+			        console.log("asked for a random question, advance to state player response")
+			    } else {
+			        this.question = message;
+			        console.log("question received, advance to state player response")
+			    }
+
+			    this.sendText(phoneNumber, 'Question received, now wait for player responses');
+			    this.judgeStartToPlayerResponse(); //advance state
 			}
 		}
 		else {
@@ -368,13 +402,18 @@ class Game {
 	}
 
 	gameOver() {
+	    var tie = false;
 		var max = 0;
 		var winnerName;
 		for (var i = 0; i < this.players.length; ++i) {
 			if (this.players[i].score > max) {
 				max = this.players[i].score
 				winnerName = this.players[i].name
+			} else if (max == this.players[i].score) {
+			    tie = true;
+			    winnerName += this.players[i].name + " ";
 			}
+
 		}
 
 		var gameScoreboard = "Game over!\nName   Score\n";
@@ -382,13 +421,21 @@ class Game {
 		for (var i = 0; i < this.players.length; ++i) {
 		    gameScoreboard += this.players[i].name + "   " + this.players[i].score + "\n";
 		}
-		gameScoreboard += 'The winner is ' + winnerName + ' with ' + max + " points!\n"
-		gameScoreboard += winnerName + " is the Kickflip king!"
+
+		if(!tie) {
+		    gameScoreboard += 'The winner is ' + winnerName + ' with ' + max + " points!\n"
+		    gameScoreboard += winnerName + " is the Kickflip king!"
+		} else {
+		    gameScoreboard += 'The winners are ' + winnerName + ' with ' + max + " points!\n"
+		}
+
+		
 
 		for (var i = 0; i < this.players.length; ++i) {
 			this.sendText(this.players[i].phoneNumber, gameScoreboard);
 		}
 		//todo send event emitter to driver function and clear memory and shiz
+        this.driverEmitter.emit('gameOver');
 	}
  } //end of game object
 
