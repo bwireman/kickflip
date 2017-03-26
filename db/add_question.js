@@ -5,14 +5,13 @@ if (process.argv.length < 3) {
 	process.exit();
 }
 
-driver = new PgDriver(function(client) {
+driver = new PgDriver(function() {
 	question = process.argv[2];
 	for (var i = 3; i < process.argv.length; i++) {
 		question += ' ' + process.argv[i];
 	}
 
-	client.query('insert into questions (question) values ($1)', [question], function(err, result) {
-		client.end();
+	driver.addQuestion(question, function(err, result) {
 		process.exit();
 	});
 });

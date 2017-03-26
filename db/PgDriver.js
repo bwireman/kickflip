@@ -19,7 +19,13 @@ class PgDriver {
 				return console.error(err);
 			}
 			self.client = client;
-			callback(client);
+			callback();
+		});
+	}
+
+	addQuestion(question, callback) {
+		this.client.query('insert into questions (question) values ($1)', [question], function(err, result) {
+			callback(err, result);
 		});
 	}
 }
