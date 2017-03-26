@@ -173,8 +173,13 @@ class Game {
          shuffleArray(this.players);
          this.judgeIndex = 0;
          var judgeName = this.players[this.judgeIndex].name;
-         var playerMsg = `The game is starting! ${judgeName} is the first judge.\n\nWaiting for ${judgeName} to ask a question.`;
-         var judgeMsg = `The game is starting! You are the first judge. \n\nRespond with a question for the players.`;
+		 var playerList = '';
+		 for (var i = 0; i < this.players.length; ++i) {
+			 playerList += this.players[i].name;
+			 playerList += '\n'
+		 }
+         var playerMsg = "The game is starting! The players are\n" + playerList + `${judgeName} is the first judge.\n\nWaiting for ${judgeName} to ask a question.`;
+         var judgeMsg = "The game is starting! The players are\n" + playerList + "You are the first judge. \n\nRespond with a question for the players.";
 
         for (var i = 0; i < this.players.length; i++) {
             if (i == this.judgeIndex) {
