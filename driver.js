@@ -11,7 +11,9 @@ class Driver {
         this.driverEmitter = new DriverEmitter;
 
         this.driverEmitter.on('sendText', sendText);
-        this.driverEmitter.on('gameOver', this.killGame);
+        this.driverEmitter.on('gameOver', () => {
+            this.game = null;
+        });
 	}
 
 	onReceiveText(body) {
@@ -61,9 +63,6 @@ class Driver {
 		return args;
 	}
 
-    killGame() {
-        this.game = null;
-    }
 }
 
 // Twilio stuff
