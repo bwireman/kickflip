@@ -107,9 +107,14 @@ class Game {
          if (number == this.creatorPhoneNumber) {
              msg = msg.trim().toLowerCase();
              if (msg == 'start') {
-                 // enter player response stage
-                 // shuffle players, set judge index to 0
-                 this.startGame();
+				 if (this.players.length < 3) { //not enough players to start game
+					this.sendText(this.creatorPhoneNumber, "Not enough players to start.\nRequires at least 3 players\nYou have: " + this.players.length + " players");
+				 }
+				 else {
+					// enter player response stage
+					// shuffle players, set judge index to 0
+					this.startGame();
+				 }
                  return;
              }
              else {
