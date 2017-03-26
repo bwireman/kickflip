@@ -25,6 +25,8 @@ class Game {
              this.players.push(new Player(phoneNumber, username));
              this.sendText(phoneNumber,
              "Welcome to " + this.name + ", " + username + "!");
+             this.sendText(this.creatorPhoneNumber,username + "has joined the game");
+
          }
          // todo already added message? maybe??!???!?!?!
      }
@@ -345,10 +347,17 @@ class Game {
 				console.log("message too long");
 			}
 			else {
-				this.question = message;
-				console.log("question received, advance to state player response")
-				this.sendText(phoneNumber, 'Question received, now wait for player responses');
-				this.judgeStartToPlayerResponse(); //advance state
+
+			    if(message.trim().toLowerCase() == "idk") {
+			        //todo get random question
+			        console.log("asked for a random question, advance to state player response")
+			    } else {
+			        this.question = message;
+			        console.log("question received, advance to state player response")
+			    }
+
+			    this.sendText(phoneNumber, 'Question received, now wait for player responses');
+			    this.judgeStartToPlayerResponse(); //advance state
 			}
 		}
 		else {
@@ -388,13 +397,18 @@ class Game {
 	}
 
 	gameOver() {
+	    var tie = false;
 		var max = 0;
 		var winnerName;
 		for (var i = 0; i < this.players.length; ++i) {
 			if (this.players[i].score > max) {
 				max = this.players[i].score
 				winnerName = this.players[i].name
+			} else if (max == this.players[i].score) {
+			    tie = true;
+			    winnerName += this.players[i].name + " ";
 			}
+
 		}
 
 		var gameScoreboard = "Game over!\nName   Score\n";
@@ -402,8 +416,15 @@ class Game {
 		for (var i = 0; i < this.players.length; ++i) {
 		    gameScoreboard += this.players[i].name + "   " + this.players[i].score + "\n";
 		}
-		gameScoreboard += 'The winner is ' + winnerName + ' with ' + max + " points!\n"
-		gameScoreboard += winnerName + " is the Kickflip king!"
+
+		if(!tie) {
+		    gameScoreboard += 'The winner is ' + winnerName + ' with ' + max + " points!\n"
+		    gameScoreboard += winnerName + " is the Kickflip king!"
+		} else {
+		    gameScoreboard += 'The winners are ' + winnerName + ' with ' + max + " points!\n"
+		}
+
+		
 
 		for (var i = 0; i < this.players.length; ++i) {
 			this.sendText(this.players[i].phoneNumber, gameScoreboard);
