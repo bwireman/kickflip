@@ -1,7 +1,7 @@
 const PgDriver = require('./db/PgDriver.js');
 
 // Constants
-const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_TIME = 180;
+const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_TIME = 180, INACTIVE_TIME = 60 * 15;
 
 // Game object
 class Game {
@@ -19,6 +19,7 @@ class Game {
          this.driverEmitter = driverEmitter;
          this.debugMode = debugMode;
          this.responseTimer = {};
+         this.inactiveTimer = {};
          this.addPlayer(phoneNumber, username);
 
          //db driver
@@ -178,7 +179,7 @@ class Game {
                  }
                  else {
                      // username was 0 characters?
-                     console.log("Username was 0 character");
+                     console.log("Username was 0 characters");
                      this.sendText(number, "You didn\'t enter a username!\nRespond with \""+ this.name +", USERNAME\"");
                  }
              }
@@ -459,6 +460,21 @@ class Game {
 		//todo send event emitter to driver function and clear memory and shiz
         this.driverEmitter.emit('gameOver');
 	}
+
+    /*** INACTIVE TIMER STUFF ***/
+    pingInactiveTimer() {
+        clearTimeout(this.inactiveTimer);
+        this.inactiveTimer = setTimeout(this.inactiveExit, INACTIVE_TIME * 1000);
+    }
+
+    inactiveExit() {
+        for (var i = 0; i < this.players.length; ++i) {
+            this.sendText(this.players[i].phoneNumber, "The current game of kickflip has ended due to inactivity.");
+        }
+        this.driverEmitter.emit('gameOver');
+    }
+
+
  } //end of game object
 
 
