@@ -371,8 +371,8 @@ class Game {
                     var self = this;
 			        this.pgDriver.getRandomQuestion(function(question) {
                         self.question = question;
-                        this.sendText(phoneNumber, 'Question received, now wait for player responses');
-                        this.judgeStartToPlayerResponse(); //advance state
+                        self.sendText(phoneNumber, 'Question received, now wait for player responses');
+                        self.judgeStartToPlayerResponse(); //advance state
                     });
 			        console.log("asked for a random question, advance to state player response")
 			    } else {
