@@ -99,12 +99,15 @@ class Game {
      }
 
      onInput(message, phoneNumber) {
+         if (phoneNumber == this.creatorPhoneNumber && message.trim().toLowerCase() == '$exit') {
+             this.creatorForcedExit();
+         }
          // direct program based on its current state
-         if (this.state == "join") {
+         else if (this.state == "join") {
              this.parseJoinInput(message, phoneNumber);
          }
          else if (this.getPlayer(phoneNumber) == -1) {
-             this.sendText(phoneNumber, "You are not part of the active game \n\n #cock_blocked");
+             this.sendText(phoneNumber, "You are not part of the active game");
          }
          else if (this.state == "judgeStart") {
 			 console.log('calling parse judgeStart');
@@ -498,6 +501,19 @@ class Game {
 
     checkInactiveTimer() {
         console.log(this.inactiveTimer);
+    }
+
+    // Creator forced exit
+    creatorForcedExit() {
+        if (this.players) {
+            for (var i = 0; i < this.players.length; ++i) {
+                this.sendText(this.players[i].phoneNumber, "The current game of Kickflip has been closed by the game creator.");
+            }
+        }
+        if (this.inactiveTimer) {
+            clearTimeout(this.inactiveTimer);
+        }
+        this.driverEmitter.emit('gameOver');
     }
 
  } //end of game object
