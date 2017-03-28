@@ -436,7 +436,7 @@ class Game {
 
 	gameOver() {
 	    var tie = false;
-		var max = 0;
+		var max = -1;
 		var winnerName;
 		var winnersNameTie; //trust me we need this
 		for (var i = 0; i < this.players.length; ++i) {
@@ -447,7 +447,7 @@ class Game {
 				tie = false;
 			} else if (max == this.players[i].score) {
 			    tie = true;
-			    winnersNameTie += this.players[i].name + " ";
+			    winnersNameTie += this.players[i].name + ", ";
 			}
 
 		}
@@ -461,8 +461,8 @@ class Game {
 		if(!tie) {
 		    gameScoreboard += 'The winner is ' + winnerName + ' with ' + max + " points!\n"
 		    gameScoreboard += winnerName + " is the Kickflip king!"
-		} else {
-		    gameScoreboard += 'The winners are ' + winnersNameTie + ' with ' + max + " points each!\n"
+		} else {               //gets first person with tie score   //then everyone else
+		    gameScoreboard += 'The winners are ' + winnerName + ', ' + winnersNameTie + ' with ' + max + " points each!\n"
 		}
 
 
