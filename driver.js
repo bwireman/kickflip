@@ -9,12 +9,13 @@ class DriverEmitter extends EventEmitter {}
 
 class Driver {
 	constructor() {
+		var self = this;
 		this.game = null;
         this.driverEmitter = new DriverEmitter;
 
         this.driverEmitter.on('sendText', sendText);
         this.driverEmitter.on('gameOver', () => {
-            this.game = null;
+            self.game = null;
         });
 	}
 

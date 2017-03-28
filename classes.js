@@ -18,7 +18,7 @@ class Game {
 		 this.question = '';
          this.driverEmitter = driverEmitter;
          this.debugMode = debugMode;
-         this.responseTimer = {};
+         this.responseTimer = null;
          this.inactiveTimer = null;
          this.addPlayer(phoneNumber, username);
          this.pingInactiveTimer();
@@ -509,6 +509,9 @@ class Game {
             for (var i = 0; i < this.players.length; ++i) {
                 this.sendText(this.players[i].phoneNumber, "The current game of Kickflip has been closed by the game creator.");
             }
+        }
+        if (this.responseTimer) {
+            clearTimeout(this.responseTimer);
         }
         if (this.inactiveTimer) {
             clearTimeout(this.inactiveTimer);
