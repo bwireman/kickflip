@@ -435,40 +435,73 @@ class Game {
 	}
 
 	gameOver() {
-	    var tie = false;
-		var max = -1;
-		var winnerName;
-		var winnersNameTie; //trust me we need this
+	    // var tie = false;
+		// var max = -1;
+		// var winnerName;
+		// var winnersNameTie; //trust me we need this
+		// for (var i = 0; i < this.players.length; ++i) {
+		// 	if (this.players[i].score > max) {
+		// 		max = this.players[i].score
+		// 		winnerName = this.players[i].name
+		// 		winnersNameTie = "";
+		// 		tie = false;
+		// 	} else if (max == this.players[i].score) {
+		// 	    tie = true;
+		// 	    winnersNameTie += this.players[i].name + ", ";
+		// 	}
+        //
+		// }
+        //
+		// var gameScoreboard = "Game over!\nName   Score\n";
+        //
+		// for (var i = 0; i < this.players.length; ++i) {
+		//     gameScoreboard += this.players[i].name + "   " + this.players[i].score + "\n";
+		// }
+        //
+		// if(!tie) {
+		//     gameScoreboard += 'The winner is ' + winnerName + ' with ' + max + " points!\n"
+		//     gameScoreboard += winnerName + " is the Kickflip king!"
+		// } else {               //gets first person with tie score   //then everyone else
+		//     gameScoreboard += 'The winners are ' + winnerName + ', ' + winnersNameTie + ' with ' + max + " points each!\n"
+		// }
+        var winners = [];
+        var highscore = -1;
+
+        // Get all the players with the highest score into an array
+        for (var i = 0; i < this.players.length; ++i) {
+            var p = this.players[i];
+            if (p.score > highscore) {
+                highscore = p.score;
+                winners = [p.name];
+            }
+            else if (p.score == highscore) {
+                winners.push(p.name);
+            }
+        }
+
+        // Generate winning msg based on number of winners
+        if (winners.length == 1) {
+            var msg = `The winner is ${winners[0]} with ${highscore} points!`;
+        }
+        else {
+            var msg = "The winners are";
+            for (var i = 0; i < winners.length; ++i) {
+                if (i == 0) {
+                    msg += " " + winners[0];
+                }
+                else if (i == winners.length - 1) {
+                    msg += " and " + winners[i];
+                }
+                else {
+                    msg += ", " + winners[i];
+                }
+            }
+            msg += ` with ${highscore} points each!`;
+        }
+
+
 		for (var i = 0; i < this.players.length; ++i) {
-			if (this.players[i].score > max) {
-				max = this.players[i].score
-				winnerName = this.players[i].name
-				winnersNameTie = "";
-				tie = false;
-			} else if (max == this.players[i].score) {
-			    tie = true;
-			    winnersNameTie += this.players[i].name + ", ";
-			}
-
-		}
-
-		var gameScoreboard = "Game over!\nName   Score\n";
-
-		for (var i = 0; i < this.players.length; ++i) {
-		    gameScoreboard += this.players[i].name + "   " + this.players[i].score + "\n";
-		}
-
-		if(!tie) {
-		    gameScoreboard += 'The winner is ' + winnerName + ' with ' + max + " points!\n"
-		    gameScoreboard += winnerName + " is the Kickflip king!"
-		} else {               //gets first person with tie score   //then everyone else
-		    gameScoreboard += 'The winners are ' + winnerName + ', ' + winnersNameTie + ' with ' + max + " points each!\n"
-		}
-
-
-
-		for (var i = 0; i < this.players.length; ++i) {
-			this.sendText(this.players[i].phoneNumber, gameScoreboard);
+			this.sendText(this.players[i].phoneNumber, msg);
 		}
 		// Clear timer, kill game
         if (this.inactiveTimer) {
