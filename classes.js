@@ -435,35 +435,6 @@ class Game {
 	}
 
 	gameOver() {
-	    // var tie = false;
-		// var max = -1;
-		// var winnerName;
-		// var winnersNameTie; //trust me we need this
-		// for (var i = 0; i < this.players.length; ++i) {
-		// 	if (this.players[i].score > max) {
-		// 		max = this.players[i].score
-		// 		winnerName = this.players[i].name
-		// 		winnersNameTie = "";
-		// 		tie = false;
-		// 	} else if (max == this.players[i].score) {
-		// 	    tie = true;
-		// 	    winnersNameTie += this.players[i].name + ", ";
-		// 	}
-        //
-		// }
-        //
-		// var gameScoreboard = "Game over!\nName   Score\n";
-        //
-		// for (var i = 0; i < this.players.length; ++i) {
-		//     gameScoreboard += this.players[i].name + "   " + this.players[i].score + "\n";
-		// }
-        //
-		// if(!tie) {
-		//     gameScoreboard += 'The winner is ' + winnerName + ' with ' + max + " points!\n"
-		//     gameScoreboard += winnerName + " is the Kickflip king!"
-		// } else {               //gets first person with tie score   //then everyone else
-		//     gameScoreboard += 'The winners are ' + winnerName + ', ' + winnersNameTie + ' with ' + max + " points each!\n"
-		// }
         var winners = [];
         var highscore = -1;
 
