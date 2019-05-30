@@ -24,7 +24,7 @@ for (var i = 0; i < 3; ++i) {
 game.gameOver();
 
 // Shorten timer
-setTimeout(function() {
+setTimeout(function () {
     game.pgDriver.client.end();
 }, 2000);
 

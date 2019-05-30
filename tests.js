@@ -60,8 +60,8 @@ console.log(game);
 
 var args = driver.getArgs(' create MyGameName ,   MyName  ', 'create');
 if (args[0] != 'MyGameName') {
-	throw new Error('Driver\'s getArgs is wrong');
+    throw new Error('Driver\'s getArgs is wrong');
 }
 if (args[1] != 'MyName') {
-	throw new Error('Driver\'s getArgs is wrong');
+    throw new Error('Driver\'s getArgs is wrong');
 }

@@ -5,32 +5,32 @@ const fs = require('fs');
 const TWILIO_FILENAME = 'twilioData.json';
 const CREATE_COMMAND = 'create';
 
-class DriverEmitter extends EventEmitter {}
+class DriverEmitter extends EventEmitter { }
 
 class Driver {
 	constructor() {
 		var self = this;
 		this.game = null;
-        this.driverEmitter = new DriverEmitter;
+		this.driverEmitter = new DriverEmitter;
 
-        this.driverEmitter.on('sendText', sendText);
-        this.driverEmitter.on('gameOver', () => {
-            self.game = null;
-        });
+		this.driverEmitter.on('sendText', sendText);
+		this.driverEmitter.on('gameOver', () => {
+			self.game = null;
+		});
 	}
 
 	onReceiveText(body) {
 		var command = this.getCommand(body.Body);
 
-		if (command == CREATE_COMMAND && !this.game) {
+		if (command === CREATE_COMMAND && !this.game) {
 			this.onReceiveCreate(body);
 		}
 		else if (!this.game) {
-		    sendText(body.From, "No game running, to create a game send CREATE gamename, yourname");
+			sendText(body.From, "No game running, to create a game send CREATE gamename, yourname");
 		}
-        else {
-            this.game.onInput(body.Body, body.From);
-        }
+		else {
+			this.game.onInput(body.Body, body.From);
+		}
 	}
 
 	onReceiveCreate(body) {
@@ -47,8 +47,8 @@ class Driver {
 
 		this.game = new Classes.Game(args[0], senderNumber, args[1], this.driverEmitter, false);
 		this.game.sendText(senderNumber, "Welcome to Kickflip, " + args[1] + " , Game: " + args[0] + " has been created!\n\nHave Fun!\n\n" +
-						   "Invite your friends by texting \"invite ...\" followed by their phone numbers separated by commas, or tell them to text \" "+ args[0] + ", theirName\" to  " +
-						   twilioNumber + ". Text \"start\" to begin your game!");
+			"Invite your friends by texting \"invite ...\" followed by their phone numbers separated by commas, or tell them to text \" " + args[0] + ", theirName\" to  " +
+			twilioNumber + ". Text \"start\" to begin your game!");
 	}
 
 	getCommand(text) {
@@ -72,7 +72,7 @@ class Driver {
 }
 
 // Hide our keys from public repo
-twilioInfo = fs.readFileSync(TWILIO_FILENAME, {encoding: 'UTF-8'});
+twilioInfo = fs.readFileSync(TWILIO_FILENAME, { encoding: 'UTF-8' });
 twilioInfo = JSON.parse(twilioInfo);
 
 // Twilio stuff
@@ -83,15 +83,15 @@ const twilio = require('twilio');
 const client = new twilio.RestClient(twilioSid, twilioToken);
 
 function sendText(phoneNumber, msg) {
-    client.messages.create({
-        body: msg,
-        to: phoneNumber,
-        from: twilioNumber
-    }, (err, msg) => {
-        if (err) {
-            console.log('Error sending message: ' + err.message);
-        }
-    })
+	client.messages.create({
+		body: msg,
+		to: phoneNumber,
+		from: twilioNumber
+	}, (err, msg) => {
+		if (err) {
+			console.log('Error sending message: ' + err.message);
+		}
+	})
 }
 
 module.exports.Driver = Driver;

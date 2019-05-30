@@ -40,11 +40,11 @@ for (var i = 0; i < game.players.length; ++i) {
 
     console.log('test', game.state, game.judgeIndex);
     // Test response
-    game.onInput("austin "+i, numbers.austin);
-    game.onInput("sieu "+i, numbers.sieu);
-    game.onInput("brooke "+i, numbers.brooke);
-    game.onInput("nick "+i, numbers.nick);
-    game.onInput("ben "+i, numbers.ben);
+    game.onInput("austin " + i, numbers.austin);
+    game.onInput("sieu " + i, numbers.sieu);
+    game.onInput("brooke " + i, numbers.brooke);
+    game.onInput("nick " + i, numbers.nick);
+    game.onInput("ben " + i, numbers.ben);
     // potentially add tests for invalid numbers
 
     // Test judging
@@ -63,7 +63,7 @@ if (game.inactiveTimer) {
     clearTimeout(game.inactiveTimer);
 }
 
-setTimeout(function() {
+setTimeout(function () {
     game.pgDriver.client.end();
 }, 2000);
 console.log(game);

@@ -6,150 +6,147 @@ const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_
 // Game object
 class Game {
 
-     constructor(gameName, phoneNumber, username, driverEmitter = {}, debugMode = true) {
-         this.name = gameName;
-         this.creatorPhoneNumber = phoneNumber;
+    constructor(gameName, phoneNumber, username, driverEmitter = {}, debugMode = true) {
+        this.name = gameName;
+        this.creatorPhoneNumber = phoneNumber;
 
-         // stuff
-         this.state = 'join';
-         this.players = [];
-         this.judgeIndex = 0;
-         this.answers = [];
-		 this.question = '';
-         this.driverEmitter = driverEmitter;
-         this.debugMode = debugMode;
-         this.responseTimer = null;
-         this.inactiveTimer = null;
-         this.addPlayer(phoneNumber, username);
-         this.pingInactiveTimer();
+        // stuff
+        this.state = 'join';
+        this.players = [];
+        this.judgeIndex = 0;
+        this.answers = [];
+        this.question = '';
+        this.driverEmitter = driverEmitter;
+        this.debugMode = debugMode;
+        this.responseTimer = null;
+        this.inactiveTimer = null;
+        this.addPlayer(phoneNumber, username);
+        this.pingInactiveTimer();
 
-         //db driver
-         this.pgDriver = new PgDriver(function() {});
-     }
+        //db driver
+        this.pgDriver = new PgDriver(function () { });
+    }
 
-     addPlayer(phoneNumber, username) {
-         if (this.isValidNumber(phoneNumber) == NOT_PLAYER) {
-             this.players.push(new Player(phoneNumber, username));
+    addPlayer(phoneNumber, username) {
+        if (this.isValidNumber(phoneNumber) === NOT_PLAYER) {
+            this.players.push(new Player(phoneNumber, username));
 
-             if(phoneNumber != this.creatorPhoneNumber)
-             {
-                 this.sendText(phoneNumber,
-                 "Welcome to " + this.name + ", " + username + "!");
-                 this.sendText(this.creatorPhoneNumber,username + " joined the game!");
-                 // Ping inactive timer
-                 this.pingInactiveTimer();
-             }
-
+            if (phoneNumber != this.creatorPhoneNumber) {
+                this.sendText(phoneNumber,
+                    "Welcome to " + this.name + ", " + username + "!");
+                this.sendText(this.creatorPhoneNumber, username + " joined the game!");
+                // Ping inactive timer
+                this.pingInactiveTimer();
+            }
 
 
-         }
-         // todo already added message? maybe??!???!?!?!
-     }
 
-     // sendText(phoneNumber, msg);
-     // sendText(phoneNumber array, msg);
-     sendText(numbers, msg) {
-         if (typeof(numbers) == "string") {
-             this.sendTextWithDebug(numbers, msg);
-         }
-         else {
-             for (var i = 0; i < numbers.length; ++i) {
+        }
+        //TODO: already added message? maybe??!???!?!?!
+    }
+
+    sendText(numbers, msg) {
+        if (typeof (numbers) === "string") {
+            this.sendTextWithDebug(numbers, msg);
+        }
+        else {
+            for (var i = 0; i < numbers.length; ++i) {
                 this.sendTextWithDebug(numbers[i], msg);
-             }
-         }
-     }
-     sendTextWithDebug(number, msg) {
-         if (this.debugMode) {
-             console.log("To: " + number + "\nMessage: " + msg + "\n---");
-         }
-         else {
-             this.driverEmitter.emit('sendText', number, msg);
-         }
-     }
+            }
+        }
+    }
+    sendTextWithDebug(number, msg) {
+        if (this.debugMode) {
+            console.log("To: " + number + "\nMessage: " + msg + "\n---");
+        }
+        else {
+            this.driverEmitter.emit('sendText', number, msg);
+        }
+    }
 
-     isValidNumber(phoneNumber) {
-         //RETURN INT
-         // 0: not in player array
-         // 1: normal player (not judge)
-         // 2: judge
-         for (var i = 0; i < this.players.length; ++i) {
-             if (phoneNumber == this.players[i].phoneNumber) {
-                 if (i == this.judgeIndex) {
-                     return JUDGE;
-                 }
-                 else {
-                     return PLAYER;
-                 }
-             }
-         }
-         return NOT_PLAYER;
-     }
+    isValidNumber(phoneNumber) {
+        //RETURN INT
+        // 0: not in player array
+        // 1: normal player (not judge)
+        // 2: judge
+        for (var i = 0; i < this.players.length; ++i) {
+            if (phoneNumber === this.players[i].phoneNumber) {
+                if (i === this.judgeIndex) {
+                    return JUDGE;
+                }
+                else {
+                    return PLAYER;
+                }
+            }
+        }
+        return NOT_PLAYER;
+    }
 
-     isCreator(phoneNumber) {
-         return phoneNumber == this.creatorPhoneNumber;
-     }
+    isCreator(phoneNumber) {
+        return phoneNumber === this.creatorPhoneNumber;
+    }
 
-     getPlayer(phoneNumber) {
-         for (var i = 0; i < this.players.length; ++i) {
-             if (phoneNumber == this.players[i].phoneNumber) {
-                 return i;
-             }
-         }
-         return -1;
-     }
+    getPlayer(phoneNumber) {
+        for (var i = 0; i < this.players.length; ++i) {
+            if (phoneNumber === this.players[i].phoneNumber) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
-     onInput(message, phoneNumber) {
-         if (phoneNumber == this.creatorPhoneNumber && message.trim().toLowerCase() == '$exit') {
-             this.creatorForcedExit();
-         }
-         // direct program based on its current state
-         else if (this.state == "join") {
-             this.parseJoinInput(message, phoneNumber);
-         }
-         else if (this.getPlayer(phoneNumber) == -1) {
-             this.sendText(phoneNumber, "You are not part of the active game");
-         }
-         else if (this.state == "judgeStart") {
-			 console.log('calling parse judgeStart');
-			 this.parseJudgeStart(message, phoneNumber);
-         }
-         else if (this.state == "playerResponses") {
-             this.parseResponse(message, phoneNumber);
-         }
-         else if (this.state == "judging") {
-		  //todo parse judging
-			 console.log('calling parse judgeJudging');
-			 this.parseJudging(message, phoneNumber);
-         }
-     }
+    onInput(message, phoneNumber) {
+        if (phoneNumber === this.creatorPhoneNumber && message.trim().toLowerCase() === '$exit') {
+            this.creatorForcedExit();
+        }
+        // direct program based on its current state
+        else if (this.state === "join") {
+            this.parseJoinInput(message, phoneNumber);
+        }
+        else if (this.getPlayer(phoneNumber) === -1) {
+            this.sendText(phoneNumber, "You are not part of the active game");
+        }
+        else if (this.state === "judgeStart") {
+            console.log('calling parse judgeStart');
+            this.parseJudgeStart(message, phoneNumber);
+        }
+        else if (this.state === "playerResponses") {
+            this.parseResponse(message, phoneNumber);
+        }
+        else if (this.state === "judging") {
+            //todo parse judging
+            console.log('calling parse judgeJudging');
+            this.parseJudging(message, phoneNumber);
+        }
+    }
 
-     // Parsing input functions
-     parseJoinInput(msg, number) {
-         // check for start
-         if (number == this.creatorPhoneNumber) {
-             msg = msg.trim().toLowerCase();
-             if (msg == 'start') {
-				 if (this.players.length < 3) { //not enough players to start game
-					this.sendText(this.creatorPhoneNumber, "Not enough players to start.\nRequires at least 3 players\nYou have: " + this.players.length + " players");
-				 }
-				 else {
-					// enter player response stage
-					// shuffle players, set judge index to 0
-					this.startGame();
+    // Parsing input functions
+    parseJoinInput(msg, number) {
+        // check for start
+        if (number === this.creatorPhoneNumber) {
+            msg = msg.trim().toLowerCase();
+            if (msg === 'start') {
+                if (this.players.length < 3) { //not enough players to start game
+                    this.sendText(this.creatorPhoneNumber, "Not enough players to start.\nRequires at least 3 players\nYou have: " + this.players.length + " players");
+                }
+                else {
+                    // enter player response stage
+                    // shuffle players, set judge index to 0
+                    this.startGame();
                     // Ping inactive timer
                     this.pingInactiveTimer();
-				 }
-                 return;
-             }
-             else {
-                 var invite = 'invite'
-                 msg = msg.trim().toLowerCase();
-                 if (msg.substr(0, invite.length)) {
-                     msg = msg.substr(invite.length);
-                     var inputNumbers = msg.split(',');
-                     var tmpPhoneNumbers = [];
-                     // Get all of the valid phone numbers from invite command
-                     for (var i = 0; i < inputNumbers.length; ++i) {
+                }
+                return;
+            }
+            else {
+                var invite = 'invite'
+                msg = msg.trim().toLowerCase();
+                if (msg.substr(0, invite.length)) {
+                    msg = msg.substr(invite.length);
+                    var inputNumbers = msg.split(',');
+                    var tmpPhoneNumbers = [];
+                    // Get all of the valid phone numbers from invite command
+                    for (var i = 0; i < inputNumbers.length; ++i) {
                         //  inputNumbers[i] = inputNumbers[i].trim();
                         var fixedInput = '';
                         for (var j = 0; j < inputNumbers[i].length; ++j) {
@@ -157,61 +154,61 @@ class Game {
                                 fixedInput += inputNumbers[i][j];
                             }
                         }
-                        if (fixedInput.length == 10) {
+                        if (fixedInput.length === 10) {
                             fixedInput = '+1' + fixedInput;
                             tmpPhoneNumbers.push(fixedInput);
                         }
-                        else if (fixedInput.length == 11 && fixedInput[0] == '1') {
+                        else if (fixedInput.length === 11 && fixedInput[0] === '1') {
                             fixedInput = '+' + fixedInput;
                             tmpPhoneNumbers.push(fixedInput);
                         }
-                     }
-                     // Send invites
-                     for (var i = 0; i < tmpPhoneNumbers.length; ++i) {
-                         this.sendText(tmpPhoneNumbers[i], "You've been invited to a game of Kickflip! If you want to join, reply \"" + this.name + ", yourName\"");
-                     }
-                     return;
-                 }
-             }
-         }
+                    }
+                    // Send invites
+                    for (var i = 0; i < tmpPhoneNumbers.length; ++i) {
+                        this.sendText(tmpPhoneNumbers[i], "You've been invited to a game of Kickflip! If you want to join, reply \"" + this.name + ", yourName\"");
+                    }
+                    return;
+                }
+            }
+        }
 
-         // game_name, user_name
-         msg = msg.split(",");
-         if (msg.length >= 2) {
-             var gameName = msg[0].trim().toLowerCase();
-             var username = msg[1].trim();
-             if (gameName == this.name.toLowerCase()) {
-                 if (username.length > 0) {
-                     this.addPlayer(number, username);
-                 }
-                 else {
-                     // username was 0 characters?
-                     console.log("Username was 0 characters");
-                     this.sendText(number, "You didn\'t enter a username!\nRespond with \""+ this.name +", USERNAME\"");
-                 }
-             }
-         }
-         else {
-             // wasn't the right format
-             console.log("message had the wrong format");
-             this.sendText(number, "Wrong format! Respond with \"" + this.name + ", USERNAME\"");
-         }
-     }
+        // game_name, user_name
+        msg = msg.split(",");
+        if (msg.length >= 2) {
+            var gameName = msg[0].trim().toLowerCase();
+            var username = msg[1].trim();
+            if (gameName === this.name.toLowerCase()) {
+                if (username.length > 0) {
+                    this.addPlayer(number, username);
+                }
+                else {
+                    // username was 0 characters?
+                    console.log("Username was 0 characters");
+                    this.sendText(number, "You didn\'t enter a username!\nRespond with \"" + this.name + ", USERNAME\"");
+                }
+            }
+        }
+        else {
+            // wasn't the right format
+            console.log("message had the wrong format");
+            this.sendText(number, "Wrong format! Respond with \"" + this.name + ", USERNAME\"");
+        }
+    }
 
-     startGame() {
-         shuffleArray(this.players);
-         this.judgeIndex = 0;
-         var judgeName = this.players[this.judgeIndex].name;
-		 var playerList = '';
-		 for (var i = 0; i < this.players.length; ++i) {
-			 playerList += this.players[i].name;
-			 playerList += '\n'
-		 }
-         var playerMsg = "The game is starting! The players are\n" + playerList + `${judgeName} is the first judge.\n\nWaiting for ${judgeName} to ask a question.`;
-         var judgeMsg = "The game is starting! The players are\n" + playerList + "You are the first judge. \n\nRespond with a question for the players, or send idk for a random question.";
+    startGame() {
+        shuffleArray(this.players);
+        this.judgeIndex = 0;
+        var judgeName = this.players[this.judgeIndex].name;
+        var playerList = '';
+        for (var i = 0; i < this.players.length; ++i) {
+            playerList += this.players[i].name;
+            playerList += '\n'
+        }
+        var playerMsg = "The game is starting! The players are\n" + playerList + `${judgeName} is the first judge.\n\nWaiting for ${judgeName} to ask a question.`;
+        var judgeMsg = "The game is starting! The players are\n" + playerList + "You are the first judge. \n\nRespond with a question for the players, or send idk for a random question.";
 
         for (var i = 0; i < this.players.length; i++) {
-            if (i == this.judgeIndex) {
+            if (i === this.judgeIndex) {
                 this.sendText(this.players[i].phoneNumber, judgeMsg);
             }
             else {
@@ -221,112 +218,112 @@ class Game {
         this.state = 'judgeStart';
         // Ping inactive timer
         this.pingInactiveTimer();
-     }
+    }
 
-     roundStart() {
-         this.state = 'judgeStart';
-         var judgeName = this.players[this.judgeIndex].name;
-         var playerMsg = `The next round is starting! ${judgeName} is the judge.\n\nWaiting for ${judgeName} to ask a question.`;
-         var judgeMsg = `The next round is starting! You are the judge. \n\nRespond with a question for the players, or send idk for a random question.`;
+    roundStart() {
+        this.state = 'judgeStart';
+        var judgeName = this.players[this.judgeIndex].name;
+        var playerMsg = `The next round is starting! ${judgeName} is the judge.\n\nWaiting for ${judgeName} to ask a question.`;
+        var judgeMsg = `The next round is starting! You are the judge. \n\nRespond with a question for the players, or send idk for a random question.`;
 
         for (var i = 0; i < this.players.length; i++) {
-			if (this.judgeIndex == 0) {
-				if (i == this.judgeIndex) {
-					this.sendText(this.players[i].phoneNumber, judgeMsg);
-				}
-				else {
-					this.sendText(this.players[i].phoneNumber, playerMsg);
-				}
-			}
+            if (this.judgeIndex === 0) {
+                if (i === this.judgeIndex) {
+                    this.sendText(this.players[i].phoneNumber, judgeMsg);
+                }
+                else {
+                    this.sendText(this.players[i].phoneNumber, playerMsg);
+                }
+            }
         }
-     }
+    }
 
-     /** BEN'S FUNCTIONS AND STUFF **/
+    /** BEN'S FUNCTIONS AND STUFF **/
 
-     playerResponseToJudging() {
-         shuffleArray(this.answers);
-         clearTimeout(this.responseTimer);
+    playerResponseToJudging() {
+        shuffleArray(this.answers);
+        clearTimeout(this.responseTimer);
 
-         var all_answers = '';
+        var all_answers = '';
 
-         for(var x = 0; x < this.answers.length; ++x) {
-             all_answers += (x+1) + ") "  + this.answers[x].text + "\n";
-         }
-
-
-         //send to all players
-         for(var i = 0; i < this.players.length; ++i) {
-             if (i != this.judgeIndex) {
-                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers +"\nWaiting for the judge to choose the best answer...");
-             }
-             else {
-                 this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers + "\nRespond with a number to choose the best answer!");
-             }
-         }
+        for (var x = 0; x < this.answers.length; ++x) {
+            all_answers += (x + 1) + ") " + this.answers[x].text + "\n";
+        }
 
 
-         this.state = "judging";
-         // Ping inactive timer
-         this.pingInactiveTimer();
-     }
+        //send to all players
+        for (var i = 0; i < this.players.length; ++i) {
+            if (i != this.judgeIndex) {
+                this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers + "\nWaiting for the judge to choose the best answer...");
+            }
+            else {
+                this.sendText(this.players[i].phoneNumber, "The answers are...\n\n" + all_answers + "\nRespond with a number to choose the best answer!");
+            }
+        }
+
+
+        this.state = "judging";
+        // Ping inactive timer
+        this.pingInactiveTimer();
+    }
 
     //checks if a , in an answer object has already submitted an answer
-     checkForInAnswers (cur_answer) {
+    checkForInAnswers(cur_answer) {
 
-         for (var i = 0; i < this.answers.length; ++i) {
-             if (cur_answer.playerIndex == this.answers[i].playerIndex) {
-                 return true;
-             }
-         }
-         return false;
-     }
+        for (var i = 0; i < this.answers.length; ++i) {
+            if (cur_answer.playerIndex === this.answers[i].playerIndex) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-     parseResponse (message, phoneNumber) {
-         if (this.isValidNumber(phoneNumber) == PLAYER) {
-             //makes answer object
-             var cur_answer = new Answer;
-             cur_answer.playerIndex = this.getPlayer(phoneNumber);
-             //if they haven't submited an answer yet
-             if (!(this.checkForInAnswers(cur_answer))) {
+    parseResponse(message, phoneNumber) {
+        if (this.isValidNumber(phoneNumber) === PLAYER) {
+            //makes answer object
+            var cur_answer = new Answer;
+            cur_answer.playerIndex = this.getPlayer(phoneNumber);
+            //if they haven't submited an answer yet
+            if (!(this.checkForInAnswers(cur_answer))) {
 
-                 //cuts answer down if larger than 140 chars
-                 if (message.length > MAX_MESSAGE_LENGTH) {
-                     message = message.substr(0, MAX_MESSAGE_LENGTH);
-                 }
+                //cuts answer down if larger than 140 chars
+                if (message.length > MAX_MESSAGE_LENGTH) {
+                    message = message.substr(0, MAX_MESSAGE_LENGTH);
+                }
 
-                 //pushes to the answers array
-                 cur_answer.text = message;
-                 this.answers.push(cur_answer);
+                //pushes to the answers array
+                cur_answer.text = message;
+                this.answers.push(cur_answer);
 
-                 //if we have all the answers (todo timer eventually)
-                 if(this.answers.length == (this.players.length - 1)) {
-                     this.playerResponseToJudging();
-                 }
-             }
-             else //if they've already responded
-             {
-                 this.sendText(phoneNumber, "You've already submitted an answer!");
-             }
+                //if we have all the answers (todo timer eventually)
+                if (this.answers.length === (this.players.length - 1)) {
+                    this.playerResponseToJudging();
+                }
+            }
+            else //if they've already responded
+            {
+                this.sendText(phoneNumber, "You've already submitted an answer!");
+            }
 
-         }
+        }
 
-     }
+    }
 
-     /** BROOKE'S FUNCTIONS AND STUFF **/
+    /** BROOKE'S FUNCTIONS AND STUFF **/
 
-	parseJudging(message, phoneNumber) {
-		// checks that phoneNumber is the judge
-		if (this.isValidNumber(phoneNumber) == JUDGE) {
-			// changes choice into an int, makes sure its valid
-			var choice = parseInt(message)
-			if (!isNaN(choice)) {
-				if (choice - 1 < this.answers.length && choice > 0) {
+    parseJudging(message, phoneNumber) {
+        // checks that phoneNumber is the judge
+        if (this.isValidNumber(phoneNumber) === JUDGE) {
+            // changes choice into an int, makes sure its valid
+            var choice = parseInt(message)
+            if (!isNaN(choice)) {
+                if (choice - 1 < this.answers.length && choice > 0) {
                     // Round is over, increase judge index
                     this.judgeIndex++;
                     var winningPlayerIndex = this.answers[choice - 1].playerIndex;
                     this.players[winningPlayerIndex].score += 10;
 
-                    if (this.judgeIndex == this.players.length) {
+                    if (this.judgeIndex === this.players.length) {
                         // judging + end game text
                         var playerMsg = `The judge selected "${this.answers[choice - 1].text}" and gave them 10 points`;
                         var prevJudgeMsg = `You selected "${this.answers[choice - 1].text}" and gave them 10 points`;
@@ -341,10 +338,10 @@ class Game {
                     }
                     for (var i = 0; i < this.players.length; ++i) {
                         var newMsg;
-                        if (i == this.judgeIndex - 1) {
+                        if (i === this.judgeIndex - 1) {
                             newMsg = prevJudgeMsg;
                         }
-                        else if (i == this.judgeIndex) {
+                        else if (i === this.judgeIndex) {
                             newMsg = newJudgeMsg;
                         }
                         else {
@@ -352,89 +349,89 @@ class Game {
                         }
                         this.sendText(this.players[i].phoneNumber, newMsg);
                     }
-					this.roundEnd();
-					console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
+                    this.roundEnd();
+                    console.log('selected player at index ' + winningPlayerIndex + ' and given them 10 points');
                     // Ping inactive timer
                     this.pingInactiveTimer();
-				}
-				else {
-					this.sendText(phoneNumber, 'Please send a valid choice')
-					console.log('choice is not valid')
-				}
-			}
-			else {
-				this.sendText(phoneNumber, 'Please send a valid choice')
-				console.log('please send a valid choice')
-			}
-		}
-		else {
-			this.sendText(phoneNumber, "You\'re not the judge!");
-			console.log('phonenumber not in players[] or phonenumber not judge')
-		}
-	}
+                }
+                else {
+                    this.sendText(phoneNumber, 'Please send a valid choice')
+                    console.log('choice is not valid')
+                }
+            }
+            else {
+                this.sendText(phoneNumber, 'Please send a valid choice')
+                console.log('please send a valid choice')
+            }
+        }
+        else {
+            this.sendText(phoneNumber, "You\'re not the judge!");
+            console.log('phonenumber not in players[] or phonenumber not judge')
+        }
+    }
 
-	parseJudgeStart(message, phoneNumber) {
-		if (this.isValidNumber(phoneNumber) == JUDGE) {
-			if (message.length > MAX_MESSAGE_LENGTH) {
-				this.sendText(phoneNumber, 'Error: response too long. Please send another message <= 140 characters');
-				console.log("message too long");
-			}
-			else {
+    parseJudgeStart(message, phoneNumber) {
+        if (this.isValidNumber(phoneNumber) === JUDGE) {
+            if (message.length > MAX_MESSAGE_LENGTH) {
+                this.sendText(phoneNumber, 'Error: response too long. Please send another message <= 140 characters');
+                console.log("message too long");
+            }
+            else {
 
-			    if(message.trim().toLowerCase() == "idk") {
+                if (message.trim().toLowerCase() === "idk") {
                     var self = this;
-			        this.pgDriver.getRandomQuestion(function(question) {
+                    this.pgDriver.getRandomQuestion(function (question) {
                         self.question = question;
                         self.sendText(phoneNumber, 'You sent: ' + question + '\nNow waiting for player responses');
                         self.judgeStartToPlayerResponse(); //advance state
 
                     });
-			        console.log("asked for a random question, advance to state player response")
-			    } else {
-			        this.question = message;
-			        console.log("question received, advance to state player response")
-    			    this.sendText(phoneNumber, 'Question received, now wait for player responses');
-    			    this.judgeStartToPlayerResponse(); //advance state
+                    console.log("asked for a random question, advance to state player response")
+                } else {
+                    this.question = message;
+                    console.log("question received, advance to state player response")
+                    this.sendText(phoneNumber, 'Question received, now wait for player responses');
+                    this.judgeStartToPlayerResponse(); //advance state
                 }
-			}
-		}
-		else {
-			if (this.isValidNumber(phoneNumber) == NOT_PLAYER) {
-				this.sendText(phoneNumber, 'You are not in this game...')
-			}
-			else {
-				this.sendText(this.players[this.getPlayer(phoneNumber)], 'You are not the current judge, please wait for judge to send question');
-				console.log("not judge, please wait for question")
-			}
-		}
-	}
+            }
+        }
+        else {
+            if (this.isValidNumber(phoneNumber) === NOT_PLAYER) {
+                this.sendText(phoneNumber, 'You are not in this game...')
+            }
+            else {
+                this.sendText(this.players[this.getPlayer(phoneNumber)], 'You are not the current judge, please wait for judge to send question');
+                console.log("not judge, please wait for question")
+            }
+        }
+    }
 
-	judgeStartToPlayerResponse() {
-		this.state = 'playerResponses';
-		for (var i = 0; i < this.players.length; ++i) {
-			if (i != this.judgeIndex) {
-				this.sendText(this.players[i].phoneNumber, 'The question is: ' + this.question + '\nPlease send your responses for judging.');
-			}
-		}
-		//todo start timer
-        this.responseTimer = setTimeout( () => {
+    judgeStartToPlayerResponse() {
+        this.state = 'playerResponses';
+        for (var i = 0; i < this.players.length; ++i) {
+            if (i != this.judgeIndex) {
+                this.sendText(this.players[i].phoneNumber, 'The question is: ' + this.question + '\nPlease send your responses for judging.');
+            }
+        }
+        //todo start timer
+        this.responseTimer = setTimeout(() => {
             this.playerResponseToJudging();
         }, RESPONSE_TIME * 1000);
-	}
+    }
 
-	roundEnd() {
+    roundEnd() {
         this.answers = [];
-		if (this.judgeIndex == this.players.length) {
-			this.gameOver();
-		}
-		else {
-			// this.judgeIndex++
-			// call Austin's function
-			this.roundStart();
-		}
-	}
+        if (this.judgeIndex === this.players.length) {
+            this.gameOver();
+        }
+        else {
+            // this.judgeIndex++
+            // call Austin's function
+            this.roundStart();
+        }
+    }
 
-	gameOver() {
+    gameOver() {
         var winners = [];
         var highscore = -1;
 
@@ -445,22 +442,22 @@ class Game {
                 highscore = p.score;
                 winners = [p.name];
             }
-            else if (p.score == highscore) {
+            else if (p.score === highscore) {
                 winners.push(p.name);
             }
         }
 
         // Generate winning msg based on number of winners
-        if (winners.length == 1) {
+        if (winners.length === 1) {
             var msg = `The winner is ${winners[0]} with ${highscore} points!`;
         }
         else {
             var msg = "The winners are";
             for (var i = 0; i < winners.length; ++i) {
-                if (i == 0) {
+                if (i === 0) {
                     msg += " " + winners[0];
                 }
-                else if (i == winners.length - 1) {
+                else if (i === winners.length - 1) {
                     msg += " and " + winners[i];
                 }
                 else {
@@ -471,15 +468,15 @@ class Game {
         }
 
 
-		for (var i = 0; i < this.players.length; ++i) {
-			this.sendText(this.players[i].phoneNumber, msg);
-		}
-		// Clear timer, kill game
+        for (var i = 0; i < this.players.length; ++i) {
+            this.sendText(this.players[i].phoneNumber, msg);
+        }
+        // Clear timer, kill game
         if (this.inactiveTimer) {
             clearTimeout(this.inactiveTimer);
         }
         this.driverEmitter.emit('gameOver');
-	}
+    }
 
     /*** INACTIVE TIMER STUFF ***/
     pingInactiveTimer(t = INACTIVE_TIME) {
@@ -487,7 +484,7 @@ class Game {
             clearTimeout(this.inactiveTimer);
         }
         var that = this;
-        this.inactiveTimer = setTimeout( () => {
+        this.inactiveTimer = setTimeout(() => {
             that.inactiveExit();
         }, t * 1000);
     }
@@ -523,7 +520,7 @@ class Game {
         this.driverEmitter.emit('gameOver');
     }
 
- } //end of game object
+} //end of game object
 
 
 // Player object
