@@ -16,7 +16,7 @@ const twilioToken = Driver.twilioInfo.token;
 // The index
 app.get('/', function (req, res) {
 	//res.send('This is the server for Kickflip');
-	res.redirect('https://github.com/dudasaus/kickflip');
+	res.redirect('https://github.com/bwireman/kickflip');
 })
 
 app.get('/logo', function (req, res) {
@@ -28,10 +28,6 @@ app.get('/logo', function (req, res) {
 app.post('/text', function (req, res) {
 	var body = req.body;
 	driver.onReceiveText(body);
-	/*var twiml = new twilio.TwimlResponse();
-	twiml.message('Hello! From your friends at Kickflip!');
-	res.writeHead(200, {'Content-Type': 'text/xml'});
-	res.end(twiml.toString());*/
 })
 
 app.listen(3000, function () {
