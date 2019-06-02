@@ -1,7 +1,7 @@
-const PgDriver = require('./db/PgDriver.js');
+const fs = require('fs');
 
 // Constants
-const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_TIME = 180, INACTIVE_TIME = 60 * 15;
+const NOT_PLAYER = 0, PLAYER = 1, JUDGE = 2, MAX_MESSAGE_LENGTH = 140, RESPONSE_TIME = 180, INACTIVE_TIME = 60 * 15, RANDOM_QUESTIONS_JSON_PATH = "random.json";
 
 // Game object
 class Game {
@@ -9,6 +9,10 @@ class Game {
     constructor(gameName, phoneNumber, username, driverEmitter = {}, debugMode = true) {
         this.name = gameName;
         this.creatorPhoneNumber = phoneNumber;
+
+        //random Questions info
+        randomQuestions = fs.readFileSync(RANDOM_QUESTIONS_JSON_PATH, { encoding: 'UTF-8' });
+        this.randomQuestions = JSON.parse(randomQuestions);
 
         // stuff
         this.state = 'join';
@@ -23,8 +27,6 @@ class Game {
         this.addPlayer(phoneNumber, username);
         this.pingInactiveTimer();
 
-        //db driver
-        this.pgDriver = new PgDriver(function () { });
     }
 
     addPlayer(phoneNumber, username) {
@@ -309,6 +311,14 @@ class Game {
 
     }
 
+    getRandomQuestion() {
+        function randomInt(max) {
+            return Math.floor(Math.random() * max + 1);
+        }
+
+        return this.randomQuestions.questions[randomInt(this.randomQuestions.length)];
+    }
+
     /** BROOKE'S FUNCTIONS AND STUFF **/
 
     parseJudging(message, phoneNumber) {
@@ -379,14 +389,10 @@ class Game {
             else {
 
                 if (message.trim().toLowerCase() === "idk") {
-                    var self = this;
-                    this.getRandomQuestion(function (question) {
-                        self.question = question;
-                        self.sendText(phoneNumber, 'You sent: ' + question + '\nNow waiting for player responses');
-                        self.judgeStartToPlayerResponse(); //advance state
-
-                    });
-                    console.log("asked for a random question, advance to state player response")
+                        this.question = this.getRandomQuestion(question);
+                        this.sendText(phoneNumber, 'You sent: ' + question + '\nNow waiting for player responses');
+                        this.judgeStartToPlayerResponse(); //advance state
+                        console.log("asked for a random question, advance to state player response")
                 } else {
                     this.question = message;
                     console.log("question received, advance to state player response")
@@ -552,6 +558,9 @@ function shuffleArray(array) {
         array[i + random] = temp;
     }
 }
+
+
+
 
 // Exports
 module.exports.Game = Game;
