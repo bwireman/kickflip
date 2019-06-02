@@ -103,7 +103,7 @@ class Game {
         }
         // direct program based on its current state
         else if (this.state === "join") {
-            this.parseJoinInput(message, phoneNumber);
+            return this.parseJoinInput(message, phoneNumber);
         }
         else if (this.getPlayer(phoneNumber) === -1) {
             this.sendText(phoneNumber, "You are not part of the active game");
@@ -169,7 +169,8 @@ class Game {
                     for (var i = 0; i < tmpPhoneNumbers.length; ++i) {
                         this.sendText(tmpPhoneNumbers[i], "You've been invited to a game of Kickflip! If you want to join, reply \"" + this.name + ", yourName\"");
                     }
-                    return;
+                    // return number of invites sent
+                    return tmpPhoneNumbers.length;
                 }
             }
         }
@@ -482,6 +483,7 @@ class Game {
             clearTimeout(this.inactiveTimer);
         }
         this.driverEmitter.emit('gameOver');
+        return winners
     }
 
     /*** INACTIVE TIMER STUFF ***/

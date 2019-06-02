@@ -17,4 +17,6 @@ var game = new Classes.Game('GameName', numbers.austin, 'Austin', driver.driverE
 game.onInput('GameName, Nick', numbers.nick);
 game.onInput('GameName   ,    Brooke  ', numbers.brooke);
 
-game.onInput(`invite ${numbers.sieu}      ,    1817-223ab0083`, numbers.austin);
+test('1 valid invite sent', () => {
+    expect(game.onInput(`invite ${numbers.sieu}      ,    1817-223ab0083`, numbers.austin)).toBe(2);
+})

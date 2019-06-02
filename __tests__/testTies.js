@@ -21,10 +21,13 @@ for (var i = 0; i < 3; ++i) {
     game.players[i].score = 20;
 }
 
-game.gameOver();
+test('3 players', () => {
+    expect(game.players.length).toBe(3);
+});
 
-// Shorten timer
-setTimeout(function () {
-}, 2000);
+
+test('game over', () => {
+    expect(game.gameOver().length).toBe(3);
+});
 
 game.pingInactiveTimer(1);

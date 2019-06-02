@@ -24,3 +24,9 @@ setTimeout(function() {
 }, 2000);
 
 driver.game.pingInactiveTimer(3);
+
+test('game over', () => {
+    setTimeout(() => {
+        expect(driver.game).toBe(null);
+    }, 3500);
+});

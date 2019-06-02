@@ -17,8 +17,12 @@ driver.game = new Classes.Game('GameName', numbers.austin, 'Austin', driver.driv
 driver.game.onInput('GameName, Nick', numbers.nick);
 driver.game.onInput('GameName   ,    Brooke  ', numbers.brooke);
 
-console.log(driver.game);
+test('3 players', () => {
+    expect(driver.game.players.length).toBe(3);
+});
 
-driver.game.gameOver();
 
-console.log(driver);
+test('game over', () => {
+    driver.game.gameOver();
+    expect(driver.game).toBe(null);
+});

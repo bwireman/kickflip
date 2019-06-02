@@ -28,7 +28,8 @@ test('2 valid players joined, 3 total', () => {
     game.onInput('GameName, Ben', numbers.ben);
     game.onInput('GameName, Sieu', numbers.sieu);
 
-    expect(game.players.length).toBe(3);
+    expect(game.players.length).toBe(5);
+    expect(game.state).toBe('join')
 });
 
 // Start game
@@ -62,7 +63,12 @@ for (var i = 0; i < game.players.length; ++i) {
     game.onInput('1', 123456789);
     // valid choice
     game.onInput('1', judgePhoneNumber);
+    
 }
+
+test('game end', () => {
+    expect(game.state).toBe('join')
+})
 
 // stop inactiveTimer
 if (game.inactiveTimer) {
