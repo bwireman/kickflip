@@ -21,7 +21,6 @@ driver.game.onInput('GameName   ,    Brooke  ', numbers.brooke);
 
 // Shorten timer
 setTimeout(function() {
-    driver.game.pgDriver.client.end();
 }, 2000);
 
 driver.game.pingInactiveTimer(3);

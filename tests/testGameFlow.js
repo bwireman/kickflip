@@ -64,6 +64,5 @@ if (game.inactiveTimer) {
 }
 
 setTimeout(function () {
-    game.pgDriver.client.end();
 }, 2000);
 console.log(game);

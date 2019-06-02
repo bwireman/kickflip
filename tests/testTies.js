@@ -25,7 +25,6 @@ game.gameOver();
 
 // Shorten timer
 setTimeout(function () {
-    game.pgDriver.client.end();
 }, 2000);
 
 game.pingInactiveTimer(1);
