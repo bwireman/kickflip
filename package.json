@@ -7,6 +7,9 @@
     "url": "https://github.com/dudasaus/kickflip.git",
     "dependencies": {}
   },
+  "scripts": {
+    "test": "jest"
+  },
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
