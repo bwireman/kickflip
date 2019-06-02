@@ -20,7 +20,7 @@ app.get('/', function (req, res) {
 })
 
 app.get('/logo', function (req, res) {
-	res.sendFile(path.join(__dirname + '/kickflipLogo2.png'));
+	res.sendFile(path.join(__dirname + 'assets/kickflipLogo2.png'));
 })
 
 // handle POST requests at /text

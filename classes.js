@@ -380,7 +380,7 @@ class Game {
 
                 if (message.trim().toLowerCase() === "idk") {
                     var self = this;
-                    this.pgDriver.getRandomQuestion(function (question) {
+                    this.getRandomQuestion(function (question) {
                         self.question = question;
                         self.sendText(phoneNumber, 'You sent: ' + question + '\nNow waiting for player responses');
                         self.judgeStartToPlayerResponse(); //advance state
