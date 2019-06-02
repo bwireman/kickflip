@@ -1,5 +1,5 @@
-const Driver = require('./driver.js');
-const Classes = require('./classes.js');
+const Driver = require('../driver.js');
+const Classes = require('../classes.js');
 
 const numbers = {
     austin: "+12488824432",

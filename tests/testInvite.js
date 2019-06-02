@@ -1,5 +1,5 @@
-const Driver = require('./driver.js');
-const Classes = require('./classes.js');
+const Driver = require('../driver.js');
+const Classes = require('../classes.js');
 
 const numbers = {
     austin: "+12488824432",
@@ -17,15 +17,4 @@ var game = new Classes.Game('GameName', numbers.austin, 'Austin', driver.driverE
 game.onInput('GameName, Nick', numbers.nick);
 game.onInput('GameName   ,    Brooke  ', numbers.brooke);
 
-for (var i = 0; i < 3; ++i) {
-    game.players[i].score = 20;
-}
-
-game.gameOver();
-
-// Shorten timer
-setTimeout(function () {
-    game.pgDriver.client.end();
-}, 2000);
-
-game.pingInactiveTimer(1);
+game.onInput(`invite ${numbers.sieu}      ,    1817-223ab0083`, numbers.austin);

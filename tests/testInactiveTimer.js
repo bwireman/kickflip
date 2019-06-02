@@ -1,5 +1,5 @@
-const Driver = require('./driver.js');
-const Classes = require('./classes.js');
+const Driver = require('../driver.js');
+const Classes = require('../classes.js');
 
 const numbers = {
     austin: "+12488824432",
@@ -17,8 +17,11 @@ driver.game = new Classes.Game('GameName', numbers.austin, 'Austin', driver.driv
 driver.game.onInput('GameName, Nick', numbers.nick);
 driver.game.onInput('GameName   ,    Brooke  ', numbers.brooke);
 
-console.log(driver.game);
+// console.log(driver.game);
 
-driver.game.gameOver();
+// Shorten timer
+setTimeout(function() {
+    driver.game.pgDriver.client.end();
+}, 2000);
 
-console.log(driver);
+driver.game.pingInactiveTimer(3);
