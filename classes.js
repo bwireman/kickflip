@@ -11,7 +11,7 @@ class Game {
         this.creatorPhoneNumber = phoneNumber;
 
         //random Questions info
-        randomQuestions = fs.readFileSync(RANDOM_QUESTIONS_JSON_PATH, { encoding: 'UTF-8' });
+        let randomQuestions = fs.readFileSync(RANDOM_QUESTIONS_JSON_PATH, { encoding: 'UTF-8' });
         this.randomQuestions = JSON.parse(randomQuestions);
 
         // stuff

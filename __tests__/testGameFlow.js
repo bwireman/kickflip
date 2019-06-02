@@ -12,18 +12,24 @@ const numbers = {
 var driver = new Driver.Driver();
 var game = new Classes.Game('GameName', numbers.austin, 'Austin', driver.driverEmitter);
 
-// Testing joining
-// Valid
-game.onInput('GameName, Nick', numbers.nick);
-game.onInput('GameName   ,    Brooke  ', numbers.brooke);
-// Invalid
-game.onInput('GameName, NickAgain', numbers.nick);
-game.onInput('WrongName, NickStill', numbers.ben);
-game.onInput('GameName   ,    ', numbers.ben);
-game.onInput('GameName username', numbers.ben);
-// Valid again
-game.onInput('GameName, Ben', numbers.ben);
-game.onInput('GameName, Sieu', numbers.sieu);
+
+test('2 valid players joined, 3 total', () => {
+
+    // Testing joining
+    // Valid
+    game.onInput('GameName, Nick', numbers.nick);
+    game.onInput('GameName   ,    Brooke  ', numbers.brooke);
+    // Invalid
+    game.onInput('GameName, NickAgain', numbers.nick);
+    game.onInput('WrongName, NickStill', numbers.ben);
+    game.onInput('GameName   ,    ', numbers.ben);
+    game.onInput('GameName username', numbers.ben);
+    // Valid again
+    game.onInput('GameName, Ben', numbers.ben);
+    game.onInput('GameName, Sieu', numbers.sieu);
+
+    expect(game.players.length).toBe(3);
+});
 
 // Start game
 game.onInput('STaRt', numbers.austin);
