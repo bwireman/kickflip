@@ -390,8 +390,8 @@ class Game {
             else {
 
                 if (message.trim().toLowerCase() === "idk") {
-                        this.question = this.getRandomQuestion(question);
-                        this.sendText(phoneNumber, 'You sent: ' + question + '\nNow waiting for player responses');
+                        this.question = this.getRandomQuestion();
+                        this.sendText(phoneNumber, 'You sent: ' + this.question + '\nNow waiting for player responses');
                         this.judgeStartToPlayerResponse(); //advance state
                         console.log("asked for a random question, advance to state player response")
                 } else {
