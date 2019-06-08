@@ -1,7 +1,8 @@
 # kickflip
-MHacks 9 Project
-
+MHacks 9 Project :rocket:
 Party phone game using the twilio API and node.js
+
+![alt text](https://raw.githubusercontent.com/bwireman/kickflip/master/assets/kickflipLogo2.png)
 
 Creating and Starting a game
 -----------------------------
@@ -15,6 +16,8 @@ Playing the game
 2. Everyone will answer the question
 3. The judge will choose a round winner and then a new judge will be chosen
 4. The game will end once everyone has been the judge and the person with the highest score will be declared the Kickflip KING! :crown:
+
+![alt text](http://benwireman.com.s3-website.us-east-2.amazonaws.com/assets/democ.png)
 
 
 Install
